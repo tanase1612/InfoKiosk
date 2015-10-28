@@ -5,6 +5,7 @@
  */
 
 var config = {
+    socketAddress: "ws://localhost:8081/Common",
     views: [
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
@@ -59,6 +60,34 @@ var app = angular.module('SimPlannerApp', [
             'ui.router'
           ]);
 
+app.factory('socketService', function () {
+        var service = {};
+    
+        service.connect = function (call) {
+            var socket = new WebSocket(config.socketAddress),   //  Connecting to socket server
+                result;
+            
+            socket.onopen = function (){
+                console.log("Server is on!");
+                socket.send(JSON.stringify(call)) ;
+            };
+            
+            socket.onmessage = function(response){
+                console.log('response :', response.data);
+                result = response.data;
+            };
+            
+            socket.onclose = function(){
+                socket.close;
+                console.log("socket is closed");
+            };
+            
+            return result;
+        };
+    
+        return service;
+    });
+
 //  Routes
 app.config(function ($stateProvider, $urlRouterProvider) {
     // For any unmatched url, redirect to '/'
@@ -89,31 +118,27 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 });
 
 //  Controllers
-app.controller('loginController', ['$scope', function ($scope) {
+app.controller('navController', ['$scope',  function ($scope) {
+    console.log('navController ready for duty!');
+    $scope.nav = config.views;
+}]);
+
+app.controller('loginController', ['$scope', 'socketService', function ($scope, socketService) {
     console.log('loginController ready for duty!');
     $scope.message = "hi";
 }]);
 
-app.controller('viewController', ['$scope', '$state', 'view', function ($scope, $state, view) {
+app.controller('viewController', ['$scope', '$state', 'view', 'socketService', function ($scope, $state, view, socketService) {
     if (view === undefined) {
+        console.log('bob');
         $state.go('login');
     }
 
     console.log('viewController ready for duty!');
+    
+    
+    console.log('data : ', socketService.connect('PRINT'));
+    $scope.data = socketService.connect('PRINT');
 
     $scope.values = view.values;
 }]);
-
-// Connecting to socket server
-var socket = new WebSocket("ws://localhost:8082/Common");
-socket.onopen = function (){
-    console.log("Server is on!");
-    socket.send(JSON.stringify("PRINT")) ;
-};
-socket.onmessage = function(data){
-    console.log(data.data);  
-};
-socket.onclose = function(){
-   socket.close;
-console.log("socket is closed");
-};

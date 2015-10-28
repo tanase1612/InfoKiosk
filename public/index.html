@@ -17,9 +17,27 @@
         
         <!-- Load AngularJS Application -->
         <script src="core.js"></script>
+        
+        <!-- Our CSS -->
+        <link type="text/css" href="assets/styles/main.css">
+        <link type="text/css" href="assets/styles/nav.css">
     </head>
 
     <body>
+        <nav ng-controller="navController">
+            <ul>
+                <li>
+                    <span>
+                        <i class="glyphicon glyphicon-menu-hamburger"></i>
+                    </span>
+                </li>
+                <li ng-repeat="view in nav">
+                    <a href="#/view/{{view.route}}">{{view.route}}</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- This is where page content is inserted to -->
         <div ui-view></div>
     </body>
 </html>
