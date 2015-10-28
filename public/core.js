@@ -1,3 +1,9 @@
+/*
+ *  Authors:
+ *  Michael Tot Korsgaard : totkorsgaard@gmail.com
+ *  Adi Tanase
+ */
+
 var config = {
     views: [
         {
@@ -49,8 +55,9 @@ var config = {
     ]
 };
 
-var app = angular.module('SimPlannerApp', ['ui.router']);
-
+var app = angular.module('SimPlannerApp', [
+            'ui.router'
+          ]);
 
 //  Routes
 app.config(function ($stateProvider, $urlRouterProvider) {
@@ -60,21 +67,21 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('login', {
             url: "/login",
-            templateUrl: '/views/login.html',
+            templateUrl: 'views/login.html',
             controller: 'loginController'
         })
         .state('view', {
             url: '/view/:view',
-            templateUrl: '/views/view.html',
+            templateUrl: 'views/view.html',
             controller: 'viewController',
             resolve: {
-                view: function ($stateParams) {
-                    for(var i = 0; i < config.views.length; i++){
-                        if(config.views[i].route === $stateParams.view){
+                view: function ($stateParams, configService) {
+                    for (var i = 0; i < config.views.length; i++) {
+                        if (config.views[i].route === $stateParams.view) {
                             return config.views[i];
                         }
                     }
-                    
+
                     return undefined;
                 }
             }
@@ -84,14 +91,15 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //  Controllers
 app.controller('loginController', ['$scope', function ($scope) {
     console.log('loginController ready for duty!');
+    $scope.message = "hi";
 }]);
 
 app.controller('viewController', ['$scope', '$state', 'view', function ($scope, $state, view) {
-    if(view === undefined){
+    if (view === undefined) {
         $state.go('login');
     }
-    
+
     console.log('viewController ready for duty!');
-    
+
     $scope.values = view.values;
 }]);
