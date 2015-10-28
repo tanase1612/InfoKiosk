@@ -103,3 +103,17 @@ app.controller('viewController', ['$scope', '$state', 'view', function ($scope, 
 
     $scope.values = view.values;
 }]);
+
+// Connecting to socket server
+var socket = new WebSocket("ws://localhost:8082/Common");
+socket.onopen = function (){
+    console.log("Server is on!");
+    socket.send(JSON.stringify("PRINT")) ;
+};
+socket.onmessage = function(data){
+    console.log(data.data);  
+};
+socket.onclose = function(){
+   socket.close;
+console.log("socket is closed");
+};
