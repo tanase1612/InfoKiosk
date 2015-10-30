@@ -4,12 +4,16 @@
  *  Adi Tanase
  */
 
+/*
+ *  Configuration
+ */
 var config = {
     socketAddress: "ws://localhost:8081/Common",
+    IISProjectName: "simplanner",
     views: [
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'salary',
+            route: 'arbejds tider',
 
             //  functions available in the view.
             viewFunctions: {
@@ -19,22 +23,23 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'CALL',
+                get: 'TESTCALL1',
                 put: 'CALL',
                 remove: 'CALL'
             },
 
             //  Which values should be shown in the view
+            //  The first value in is the shown text, the second is variable to match the appropriate JSON value
             values: [
-                    'hour',
-                    'pay',
-                    'total payment'
+                    ['timer', 'hours'],
+                    ['timeløn', 'salary'],
+                    ['samlet', 'totalPayment']
                 ]
         },
 
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'hours',
+            route: 'timer',
 
             //  functions available in the view.
             viewFunctions: {
@@ -43,27 +48,32 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'CALL',
+                get: 'TESTCALL2',
                 put: 'CALL',
                 remove: 'CALL'
             },
 
             //  Which values should be shown in the view
+            //  The first value in is the shown text, the second is variable to match the appropriate JSON value
             values: [
-                    'hour'
+                    ['timer', 'hours']
                 ]
         }
     ]
 };
 
 var app = angular.module('SimPlannerApp', [
-            'ui.router'
+            'ui.router',
+            'ui.bootstrap'
           ]);
 
+/*
+ *  Services
+ */
 app.factory('socketService', function () {
         var service = {};
     
-        service.connect = function (call) {
+        service.connect = function (call, callback) {
             var socket = new WebSocket(config.socketAddress),   //  Connecting to socket server
                 result;
             
@@ -73,38 +83,64 @@ app.factory('socketService', function () {
             };
             
             socket.onmessage = function(response){
-                console.log('response :', response.data);
-                result = response.data;
+                console.log('\n' + new Date().toUTCString() + '\nServer responded');
+                
+                callback(JSON.parse(response.data));
             };
             
             socket.onclose = function(){
                 socket.close;
-                console.log("socket is closed");
+                console.log("Socket is closed");
             };
-            
-            return result;
         };
     
         return service;
     });
 
-//  Routes
-app.config(function ($stateProvider, $urlRouterProvider) {
-    // For any unmatched url, redirect to '/'
-    $urlRouterProvider.otherwise("/login");
+/*
+ *  Filter
+ */
+app.filter('capitalize', function () {
+        return function (input, all) {
+            return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }) : '';
+        }
+    })
+    .filter('datetime', function ($filter) {
+        return function (input) {
+            if (input == null) {
+                return "";
+            }
 
+            var _date = $filter('date')(new Date(input),
+                'MMM dd yyyy - HH:mm:ss');
+
+            return _date;
+
+        };
+    });
+
+/*
+ *  Routes
+ */
+app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+    var urlBase = /*'/' + config.IISProjectName + '/'*/ '';
+    
+    //$locationProvider.html5Mode(true).hashPrefix('!');
+    
     $stateProvider
         .state('login', {
             url: "/login",
-            templateUrl: 'views/login.html',
+            templateUrl: urlBase + 'views/login.html',
             controller: 'loginController'
         })
         .state('view', {
             url: '/view/:view',
-            templateUrl: 'views/view.html',
+            templateUrl: urlBase + 'views/view.html',
             controller: 'viewController',
             resolve: {
-                view: function ($stateParams, configService) {
+                view: function ($stateParams) {
                     for (var i = 0; i < config.views.length; i++) {
                         if (config.views[i].route === $stateParams.view) {
                             return config.views[i];
@@ -114,31 +150,79 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                     return undefined;
                 }
             }
+        })
+        .state('404', {
+            url: '{path:.*}',
+            templateUrl: urlBase + '/views/404.html',
+            controller: 'errorController'
         });
 });
 
-//  Controllers
+/*
+ *  Controllers
+ */
 app.controller('navController', ['$scope',  function ($scope) {
-    console.log('navController ready for duty!');
-    $scope.nav = config.views;
-}]);
+        console.log('navController ready for duty!');
+        $scope.nav = config.views;
+    }])
+    .controller('loginController', ['$scope', 'socketService', function ($scope, socketService) {
+        console.log('loginController ready for duty!');
+        $scope.user = {
+            isLoggedIn : false
+        };
+        
+        $scope.signIn = function(){
+            //  Do something
+        };
+    }])
+    .controller('viewController', ['$scope', '$state', '$interval', 'view', 'socketService', function ($scope, $state, $interval, view, socketService) {
+        //  If there is no view, return to login page
+        if (view === undefined) {
+            $state.go('login');
+        }
 
-app.controller('loginController', ['$scope', 'socketService', function ($scope, socketService) {
-    console.log('loginController ready for duty!');
-    $scope.message = "hi";
-}]);
-
-app.controller('viewController', ['$scope', '$state', 'view', 'socketService', function ($scope, $state, view, socketService) {
-    if (view === undefined) {
-        console.log('bob');
-        $state.go('login');
-    }
-
-    console.log('viewController ready for duty!');
-    
-    
-    console.log('data : ', socketService.connect('PRINT'));
-    $scope.data = socketService.connect('PRINT');
-
-    $scope.values = view.values;
-}]);
+        console.log('viewController ready for duty!');
+        
+        /*
+         *  Sets the models to be used in the view
+         */
+        $scope.values = view.values;
+        $scope.title = view.route;
+        $scope.viewFunctions = view.viewFunctions;
+        $scope.items = [];
+        get();
+        
+        //  get new data every minute (60.000 milliseconds)
+        $interval(function() {
+            get();
+        }, 60000);
+        
+        /*
+         *  Functions used by the view
+         */
+        $scope.findMatch = function(e, keyName){
+            for(key in e){
+                if(key === keyName){
+                    return e[key];
+                }
+            }
+        };
+        
+        $scope.print = function(){
+            console.log('content is printed');
+        };
+        
+        /*
+         *  Functions used by the controller
+         */
+        function get(){
+            socketService.connect(view.storedProcedure.get, function(response){
+                $scope.$apply(function() {
+                    $scope.items = response.data;
+                });
+            });
+        }
+    }])
+    .controller('errorController', ['$scope', function ($scope) {
+        console.log('errorController ready for duty!');
+    }]);

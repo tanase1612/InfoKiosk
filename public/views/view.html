@@ -1,20 +1,24 @@
-<table>
+<h1>{{ title | capitalize }}</h1>
+
+<table class="table table-striped table-hover">
     <thead>
         <tr>
             <td ng-repeat="value in values">
-                <p>
-                    {{ value }}
-                    <h6>This is a test!</h6>
-                </p>
+                <h3>
+                    {{ value[0] | capitalize }}
+                </h3>
             </td>
         </tr>
     </thead>
     <tbody>
-        <tr>
-        </tr>
-        <tr>
-        </tr>
-        <tr>
+        <tr ng-repeat="item in items">
+            <td ng-repeat="value in values">
+                {{ findMatch(item, value[1]) }}
+            </td>
         </tr>
     </tbody>
 </table>
+
+<div class="viewNavigation">
+    <a href class="btn btn-default" ng-click="print()" ng-show="viewFunctions.print"><i class="glyphicon glyphicon-print"></i> Print</a>
+</div>

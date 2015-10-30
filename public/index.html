@@ -1,6 +1,8 @@
 <!doctype html>
 <html ng-app="SimPlannerApp">
     <head>
+        <base href="/simplanner/">
+        <!--<base href="/">-->
         <!-- META -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
@@ -8,36 +10,58 @@
 
         <title>Simplanner</title>
         
+        <link rel="icon" type="image/png" href="favicon.png">
+        
         <!-- Load Bootstrap CSS library -->
-        <link type="text/css" href="lib/bootstrap-3.3.5-dist/css/bootstrap.min.css">
+        <link type="text/css" href="lib/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Load AngularJS modules -->
         <script src="lib/Angular-1.4.7/angular.min.js"></script>
         <script src="lib/Angular-1.4.7/angular-ui-router.min.js"></script>
+        <script src="lib/Angular-1.4.7/angular-ui-bootstrap-tpls-0.9.0.min.js"></script>
         
         <!-- Load AngularJS Application -->
         <script src="core.js"></script>
         
         <!-- Our CSS -->
-        <link type="text/css" href="assets/styles/main.css">
-        <link type="text/css" href="assets/styles/nav.css">
+        <link type="text/css" href="assets/styles/main.css" rel="stylesheet">
+        <link type="text/css" href="assets/styles/nav.css" rel="stylesheet">
     </head>
 
     <body>
         <nav ng-controller="navController">
-            <ul>
-                <li>
-                    <span>
-                        <i class="glyphicon glyphicon-menu-hamburger"></i>
+            <div class="wrapper">
+                <div class="menu" <!--ng-show="user.isLoggedIn"-->
+                    <span class="icon">
+                        <i class="glyphicon glyphicon-menu-hamburger"></i> <span class="hidden-xs">Menu</span>
                     </span>
-                </li>
-                <li ng-repeat="view in nav">
-                    <a href="#/view/{{view.route}}">{{view.route}}</a>
-                </li>
-            </ul>
+
+                    <ul>
+                        <li ng-repeat="view in nav">
+                            <a href="#/view/{{ view.route }}">{{ view.route | capitalize }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="account">
+                    <span class="icon">
+                        <span class="hidden-xs">Account</span> <i class="glyphicon glyphicon-user"></i>
+                    </span>
+
+                    <ul>
+                        <li>
+                            <a href="#/login">{{ user.isLoggedIn === true ? 'Sign out' : 'Sign in' }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <span class="clearfix"></span>
         </nav>
         
         <!-- This is where page content is inserted to -->
-        <div ui-view></div>
+        <div class="wrapper">
+            <div ui-view></div>
+        </div>
     </body>
 </html>

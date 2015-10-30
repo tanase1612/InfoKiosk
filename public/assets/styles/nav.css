@@ -7,16 +7,54 @@ nav a,
 nav i{
     color: #333;
 }
-nav ul li{
+nav ul{
     display: none;
-    list-style: none;
+    margin-top: 4px;
+    position: absolute;
+    padding: 7px;
+    vertical-align: middle;
 }
-nav ul:hover li{
+nav ul li{
+    position: relative;
+    list-style: none;
+    white-space: nowrap;
+}
+
+.menu:hover .icon,
+.account:hover .icon,
+nav ul{
+    border:1px solid #333;
+    border-radius: 5px;
+    
+    background-color: #8ec8ff;
+}
+
+.menu,
+.account{
+    position: relative;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+.menu {
+    float: left;
+}
+.menu:hover ul{
     display: block;
 }
-nav ul:hover li:first-child span{
-    border: 1px solid #333;
-    border-radius: 2px;
-    
-    background-color: rgba(0,0,0,0.2);
+
+.account{
+    float: right;
+}
+.account:hover ul{
+    display: block;
+}
+
+.icon{
+    padding: 5px;
+}
+
+.wrapper{
+    max-width: 80%;
+    margin: auto;
 }
