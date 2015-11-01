@@ -1,35 +1,39 @@
-var app = angular.module('SimPlannerApp');
-
-    app.factory('socketService', function () {
+angular.module('SimPlannerApp')
+    .factory('socketService', function () {
     var service = {};
 
     service.connect = function (call, callback) {
         var socket = new WebSocket(config.socketAddress), //  Connecting to socket server
-            result;
-        var t0 = 20111031;
-        var t1 = 20111031;
-        var newID = guid();
-        var SckParam = function (name, datatype, value) {
-            this.Name = name;
-            this.Datatype = datatype;
-            this.Value = value;
-        };
+            result,
+            t0 = 20111031,
+            t1 = 20111031,
+            newID = guid(),
+            SckParam = function (name, datatype, value) {
+                this.Name = name;
+                this.Datatype = datatype;
+                this.Value = value;
+            };
+        
         socket.onopen = function () {
             console.log("Server is on!");
+            
             socket.send(JSON.stringify({
-                "request": "CALL",
+                "request": call,
                 "respond": newID,
                 "invoke": null,
                 "payload": {
                     "Verb": "rpEvListTime",
-                    "Parm": [new SckParam("t0", "D", t0),
-                       new SckParam("t1", "D", t1)]
+                    "Parm": [
+                        new SckParam("t0", "D", t0),
+                        new SckParam("t1", "D", t1)
+                    ]
                 }
             }));
         };
 
         socket.onmessage = function (response) {
             console.log('\n' + new Date().toUTCString() + '\nServer responded');
+            console.log('data : ', response);
 
             callback(JSON.parse(response.data));
         };

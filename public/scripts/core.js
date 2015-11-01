@@ -23,7 +23,7 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'TESTCALL1',
+                get: 'CALL',
                 put: 'CALL',
                 remove: 'CALL'
             },
@@ -48,7 +48,7 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'TESTCALL2',
+                get: 'CALL',
                 put: 'CALL',
                 remove: 'CALL'
             },
@@ -64,38 +64,9 @@ var config = {
 
 var app = angular.module('SimPlannerApp', [
             'ui.router',
-            'ui.bootstrap'
+            'ui.bootstrap',
+            'ngStorage'
           ]);
-
-/*
- *  Services
- */
-app.factory('socketService', function () {
-        var service = {};
-    
-        service.connect = function (call, callback) {
-            var socket = new WebSocket(config.socketAddress),   //  Connecting to socket server
-                result;
-            
-            socket.onopen = function (){
-                console.log("Server is on!");
-                socket.send(JSON.stringify(call)) ;
-            };
-            
-            socket.onmessage = function(response){
-                console.log('\n' + new Date().toUTCString() + '\nServer responded');
-                
-                callback(JSON.parse(response.data));
-            };
-            
-            socket.onclose = function(){
-                socket.close;
-                console.log("Socket is closed");
-            };
-        };
-    
-        return service;
-    });
 
 /*
  *  Filter
@@ -125,10 +96,8 @@ app.filter('capitalize', function () {
  *  Routes
  */
 app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
-    var urlBase = /*'/' + config.IISProjectName + '/'*/ '';
-    
-    //$locationProvider.html5Mode(true).hashPrefix('!');
-    
+    var urlBase = '/' + config.IISProjectName + '/';
+
     $stateProvider
         .state('login', {
             url: "/login",
@@ -159,70 +128,27 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
 });
 
 /*
- *  Controllers
+ *  A service which provides shared variables
  */
-app.controller('navController', ['$scope',  function ($scope) {
-        console.log('navController ready for duty!');
-        $scope.nav = config.views;
-    }])
-    .controller('loginController', ['$scope', 'socketService', function ($scope, socketService) {
-        console.log('loginController ready for duty!');
-        $scope.user = {
-            isLoggedIn : false
-        };
-        
-        $scope.signIn = function(){
-            //  Do something
-        };
-    }])
-    .controller('viewController', ['$scope', '$state', '$interval', 'view', 'socketService', function ($scope, $state, $interval, view, socketService) {
-        //  If there is no view, return to login page
-        if (view === undefined) {
-            $state.go('login');
-        }
+app.factory('sharedProperties', function ($localStorage) {
+    var service = {};
 
-        console.log('viewController ready for duty!');
-        
-        /*
-         *  Sets the models to be used in the view
-         */
-        $scope.values = view.values;
-        $scope.title = view.route;
-        $scope.viewFunctions = view.viewFunctions;
-        $scope.items = [];
-        get();
-        
-        //  get new data every minute (60.000 milliseconds)
-        $interval(function() {
-            get();
-        }, 60000);
-        
-        /*
-         *  Functions used by the view
-         */
-        $scope.findMatch = function(e, keyName){
-            for(key in e){
-                if(key === keyName){
-                    return e[key];
-                }
-            }
-        };
-        
-        $scope.print = function(){
-            console.log('content is printed');
-        };
-        
-        /*
-         *  Functions used by the controller
-         */
-        function get(){
-            socketService.connect(view.storedProcedure.get, function(response){
-                $scope.$apply(function() {
-                    $scope.items = response.data;
-                });
-            });
+    service.getConfig = function () {
+        return config;
+    };
+
+    service.getUser = function () {
+        if($localStorage.user === undefined){
+            $localStorage.user = {
+                isLoggedIn: false
+            };
         }
-    }])
-    .controller('errorController', ['$scope', function ($scope) {
-        console.log('errorController ready for duty!');
-    }]);
+        return $localStorage.user;
+    };
+    service.setUser = function (value) {
+        $localStorage.user = value;
+        return $localStorage.user;
+    };
+
+    return service;
+});

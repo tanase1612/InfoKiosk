@@ -1,8 +1,6 @@
 <!doctype html>
 <html ng-app="SimPlannerApp">
     <head>
-    <!--<base href="/simplanner/">-->
-        <!--<base href="/">-->
         <!-- META -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
@@ -19,9 +17,18 @@
         <script src="lib/Angular-1.4.7/angular.min.js"></script>
         <script src="lib/Angular-1.4.7/angular-ui-router.min.js"></script>
         <script src="lib/Angular-1.4.7/angular-ui-bootstrap-tpls-0.9.0.min.js"></script>
+        <script src="lib/Angular-1.4.7/angular-ngStorage.js"></script>
         
         <!-- Load AngularJS Application -->
-        <script src="core.js"></script>
+        <!-- Core -->
+        <script src="scripts/core.js"></script>
+        <!-- Services -->
+        <script src="scripts/services/socket.service.js"></script>
+        <!-- Controllers -->
+        <script src="scripts/controllers/nav.controller.js"></script>
+        <script src="scripts/controllers/login.controller.js"></script>
+        <script src="scripts/controllers/view.controller.js"></script>
+        <script src="scripts/controllers/error.controller.js"></script>
         
         <!-- Our CSS -->
         <link type="text/css" href="assets/styles/main.css" rel="stylesheet">
@@ -31,7 +38,7 @@
     <body>
         <nav ng-controller="navController">
             <div class="wrapper">
-                <div class="menu" <!--ng-show="user.isLoggedIn"-->
+                <div class="menu" ng-show="user.isLoggedIn">
                     <span class="icon">
                         <i class="glyphicon glyphicon-menu-hamburger"></i> <span class="hidden-xs">Menu</span>
                     </span>
