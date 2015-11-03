@@ -1,0 +1,68 @@
+body{
+    min-width: 320px;
+    padding-bottom: 50px;
+}
+
+.viewNavigation{
+    display: inline-block;
+    float: right;
+}
+.viewNavigation a {
+    float: right;
+}
+
+.datepicker-container{
+    display: inline-block;
+    vertical-align: top;
+}
+.datepicker-container:last-child{
+    margin-left: 25px;
+}
+.datepicker-container a{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.welcome{
+    text-align: center;
+    margin-top: 100px;
+}
+
+
+
+@media screen {
+
+    #printSection {
+
+        display: none;
+
+    }
+
+}
+
+@media print {
+
+    body * {
+
+        visibility:hidden;
+
+    }
+
+    #printSection, #printSection * {
+
+        visibility:visible;
+
+    }
+
+    #printSection {
+
+        position:absolute;
+
+        left:0;
+
+        top:0;
+
+    }
+
+}
+

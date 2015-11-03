@@ -23,23 +23,49 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'CALL',
-                put: 'CALL',
-                remove: 'CALL'
+                get: {
+                    name: 'DUMMYDATA',
+                    verb: 'multipleDates'
+                },
+                put: {
+                    name: 'DUMMYDATA',
+                    verb: 'multipleDates'
+                },
+                remove: {
+                    name: 'DUMMYDATA',
+                    verb: 'multipleDates'
+                }
             },
 
-            //  Which values should be shown in the view
-            //  The first value in is the shown text, the second is variable to match the appropriate JSON value
+            /*
+             *  Which values should be shown in the view
+             *  
+             *  parm: shownName = text shown in the view
+             *  parm: matchValue = variable name to match JSON value
+             */
             values: [
-                    ['timer', 'hours'],
-                    ['timeløn', 'salary'],
-                    ['samlet', 'totalPayment']
-                ]
+                {
+                    shownName: 'dato',
+                    matchValue: 'date'
+                },
+                {
+                    shownName: 'timer',
+                    matchValue: 'hours'
+                },
+                {
+                    shownName: 'timeløn',
+                    matchValue: 'salary'
+                },
+                {
+                    shownName: 'samlet',
+                    matchValue: 'totalPayment'
+                }
+            ]
         },
 
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'timer',
+            route: 'tidsplan',
 
             //  functions available in the view.
             viewFunctions: {
@@ -48,16 +74,36 @@ var config = {
 
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
-                get: 'CALL',
-                put: 'CALL',
-                remove: 'CALL'
+                get: {
+                    name: 'DUMMYDATA',
+                    verb: 'singleDay'
+                },
+                put: {
+                    name: 'DUMMYDATA',
+                    verb: 'singleDay'
+                },
+                remove: {
+                    name: 'DUMMYDATA',
+                    verb: 'singleDay'
+                }
             },
 
-            //  Which values should be shown in the view
-            //  The first value in is the shown text, the second is variable to match the appropriate JSON value
+            /*
+             *  Which values should be shown in the view
+             *  
+             *  parm: shownName = text shown in the view
+             *  parm: matchValue = variable name to match JSON value
+             */
             values: [
-                    ['timer', 'hours']
-                ]
+                {
+                    shownName: 'tid',
+                    matchValue: 'date'
+                },
+                {
+                    shownName: 'opgave',
+                    matchValue: 'task'
+                }
+            ]
         }
     ]
 };
@@ -95,14 +141,14 @@ app.filter('capitalize', function () {
 /*
  *  Routes
  */
-app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+app.config(function ($stateProvider) {
     var urlBase = '/' + config.IISProjectName + '/';
 
     $stateProvider
-        .state('login', {
-            url: "/login",
-            templateUrl: urlBase + 'views/login.html',
-            controller: 'loginController'
+        .state('welcome', {
+            url: "/welcome",
+            templateUrl: urlBase + 'views/welcome.html',
+            controller: 'welcomeController'
         })
         .state('view', {
             url: '/view/:view',
@@ -152,3 +198,40 @@ app.factory('sharedProperties', function ($localStorage) {
 
     return service;
 });
+
+app.directive('ngPrint', function(){
+        var printSection = document.getElementById('printSection');
+
+        // if there is no printing section, create one
+        if (!printSection) {
+            printSection = document.createElement('div');
+            printSection.id = 'printSection';
+            document.body.appendChild(printSection);
+        }
+
+        function link(scope, element, attrs) {
+            element.on('click', function () {
+                var elemToPrint = document.getElementById(attrs.printElementId);
+                if (elemToPrint) {
+                    printElement(elemToPrint);
+                    window.print();
+                }
+            });
+
+            window.onafterprint = function () {
+                // clean the print section before adding new content
+                printSection.innerHTML = '';
+            }
+        }
+
+        function printElement(elem) {
+            // clones the element you want to print
+            var domClone = elem.cloneNode(true);
+            printSection.appendChild(domClone);
+        }
+
+        return {
+            link: link,
+            restrict: 'A'
+        };
+    });
