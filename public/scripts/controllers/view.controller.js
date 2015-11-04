@@ -5,8 +5,6 @@ angular.module('SimPlannerApp')
             $state.go('welcome');
         }
 
-        console.log('viewController ready for duty!');
-
         /*
          *  Sets the models to be used in the view
          */
@@ -38,8 +36,6 @@ angular.module('SimPlannerApp')
         };
 
         $scope.print = function () {
-            console.log('content is printed');
-            
             $window.print();
         };
         

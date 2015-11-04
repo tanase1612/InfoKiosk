@@ -1,4 +1,4 @@
-<h1>{{ title | capitalize }}</h1>
+<h1>{{ title }}</h1>
 
 <div class="viewNavigation">
     <a href ng-click="fetch()" class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i> Update</a>
@@ -59,7 +59,7 @@
         <tr>
             <td ng-repeat="value in values">
                 <h3>
-                    {{ value.shownName | capitalize }}
+                    {{ value.shownName }}
                 </h3>
             </td>
         </tr>
@@ -78,7 +78,7 @@
         <tr>
             <td ng-repeat="value in values">
                 <h3>
-                    {{ value.shownName | capitalize }}
+                    {{ value.shownName }}
                 </h3>
             </td>
         </tr>

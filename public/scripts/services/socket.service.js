@@ -1,10 +1,45 @@
 angular.module('SimPlannerApp')
     .factory('socketService', function () {
-        var service = {};
+        var service = {},
+            socket;
 
+        service.handshake = function(user, password, callback){
+            var jsonObject = {
+                    'agmt': '00001',
+                    'usr': 'SPLAN',
+                    'pwd': 'pwd',
+                    "request": 'INIT'
+                };
+            
+            socket = new WebSocket(config.socketAddress);
+            
+            socket.onopen = function () {
+                console.log("Server is on!");
+                console.log('json', jsonObject);
+                
+                socket.send(JSON.stringify(jsonObject));
+            };
+            
+            socket.onmessage = function (response) {
+                console.log('\n' + new Date().toUTCString() + '\nServer responded');
+                console.log('handshake data : ', response);
+
+                callback(JSON.parse(response.data));
+            };
+        };
+    
+    
         service.connect = function (call, verb, params, callback) {
-            var socket = new WebSocket(config.socketAddress), //  Connecting to socket server
-                sckParams = [];
+             var sckParams = [],
+                jsonObject = {
+                    "request": call,
+                    "respond": guid(),
+                    "invoke": null,
+                    "payload": {
+                        "Verb": verb,
+                        "Parm": sckParams
+                    }
+                };
 
             for (var i = 0; i < params.length; i++) {
                 sckParams.push(
@@ -16,23 +51,11 @@ angular.module('SimPlannerApp')
                 );
             }
 
-            socket.onopen = function () {
-                console.log("Server is on!");
-
-                socket.send(JSON.stringify({
-                    "request": call,
-                    "respond": guid(),
-                    "invoke": null,
-                    "payload": {
-                        "Verb": verb,
-                        "Parm": sckParams
-                    }
-                }));
-            };
+            socket.send(JSON.stringify(jsonObject));
 
             socket.onmessage = function (response) {
                 console.log('\n' + new Date().toUTCString() + '\nServer responded');
-                console.log('data : ', response);
+                console.log('connect data : ', response);
 
                 callback(JSON.parse(response.data));
             };
@@ -63,11 +86,9 @@ angular.module('SimPlannerApp')
                 Value: value
             };
             
-            if(result.Datatype === 'D'){
+            /*if(result.Datatype === 'D'){
                 result.Value = '' + value.getFullYear() + ("0" + (value.getMonth() + 1)).slice(-2) + ("0" + value.getDate()).slice(-2);
-            }
-            
-            console.log(result);
+            }*/
             
             return result;
         };

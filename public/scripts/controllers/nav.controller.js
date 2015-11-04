@@ -1,7 +1,5 @@
 angular.module('SimPlannerApp')
     .controller('navController', ['$scope', '$location', 'sharedProperties', function ($scope, $location, sharedProperties) {
-        console.log('navController ready for duty!');
-    
         $scope.nav = sharedProperties.getConfig().views;
         $scope.user = sharedProperties.getUser();
         $scope.login = {};

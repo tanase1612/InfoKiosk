@@ -13,7 +13,7 @@ var config = {
     views: [
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'arbejds tider',
+            route: 'Arbejds Tider',
 
             //  functions available in the view.
             viewFunctions: {
@@ -24,8 +24,8 @@ var config = {
             //  Stored procedure to call for the data which whould be shown in the view.
             storedProcedure: {
                 get: {
-                    name: 'DUMMYDATA',
-                    verb: 'multipleDates'
+                    name: 'CALL',
+                    verb: 'rpAcListTime'
                 },
                 put: {
                     name: 'DUMMYDATA',
@@ -45,19 +45,19 @@ var config = {
              */
             values: [
                 {
-                    shownName: 'dato',
+                    shownName: 'Dato',
                     matchValue: 'date'
                 },
                 {
-                    shownName: 'timer',
+                    shownName: 'Timer',
                     matchValue: 'hours'
                 },
                 {
-                    shownName: 'timeløn',
+                    shownName: 'Timeløn',
                     matchValue: 'salary'
                 },
                 {
-                    shownName: 'samlet',
+                    shownName: 'Samlet',
                     matchValue: 'totalPayment'
                 }
             ]
@@ -65,7 +65,7 @@ var config = {
 
         {
             //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'tidsplan',
+            route: 'Tidsplan',
 
             //  functions available in the view.
             viewFunctions: {
@@ -96,11 +96,11 @@ var config = {
              */
             values: [
                 {
-                    shownName: 'tid',
+                    shownName: 'Tid',
                     matchValue: 'date'
                 },
                 {
-                    shownName: 'opgave',
+                    shownName: 'Opgave',
                     matchValue: 'task'
                 }
             ]
