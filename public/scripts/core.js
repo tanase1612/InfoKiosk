@@ -45,63 +45,29 @@ var config = {
              */
             values: [
                 {
-                    shownName: 'Dato',
-                    matchValue: 'date'
+                    shownName: 'ID',
+                    matchValue: 'EVT.ID',
+                    type: 'id'
                 },
                 {
-                    shownName: 'Timer',
-                    matchValue: 'hours'
+                    shownName: 'Start',
+                    matchValue: 'EVT.T0',
+                    type: 'date'
                 },
                 {
-                    shownName: 'Timeløn',
-                    matchValue: 'salary'
+                    shownName: 'Slut',
+                    matchValue: 'EVT.T1',
+                    type: 'date'
                 },
                 {
-                    shownName: 'Samlet',
-                    matchValue: 'totalPayment'
-                }
-            ]
-        },
-
-        {
-            //  view route: www.something.com/ name of route. default is the sign in page.
-            route: 'Tidsplan',
-
-            //  functions available in the view.
-            viewFunctions: {
-                print: true
-            },
-
-            //  Stored procedure to call for the data which whould be shown in the view.
-            storedProcedure: {
-                get: {
-                    name: 'DUMMYDATA',
-                    verb: 'singleDay'
-                },
-                put: {
-                    name: 'DUMMYDATA',
-                    verb: 'singleDay'
-                },
-                remove: {
-                    name: 'DUMMYDATA',
-                    verb: 'singleDay'
-                }
-            },
-
-            /*
-             *  Which values should be shown in the view
-             *  
-             *  parm: shownName = text shown in the view
-             *  parm: matchValue = variable name to match JSON value
-             */
-            values: [
-                {
-                    shownName: 'Tid',
-                    matchValue: 'date'
+                    shownName: 'Tekst',
+                    matchValue: 'EVT.TEXT',
+                    type: 'text'
                 },
                 {
-                    shownName: 'Opgave',
-                    matchValue: 'task'
+                    shownName: 'Ansvarlig',
+                    matchValue: 'EVT.RES',
+                    type: 'employee'
                 }
             ]
         }
@@ -186,7 +152,9 @@ app.factory('sharedProperties', function ($localStorage) {
     service.getUser = function () {
         if($localStorage.user === undefined){
             $localStorage.user = {
-                isLoggedIn: false
+                isLoggedIn: false,
+                username: '',
+                password: ''
             };
         }
         return $localStorage.user;

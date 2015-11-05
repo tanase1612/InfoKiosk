@@ -1,7 +1,7 @@
 angular.module('SimPlannerApp')
-    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'socketService', function ($scope, $state, $interval, $window, view, socketService) {
+    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'socketService', 'sharedProperties', function ($scope, $state, $interval, $window, view, socketService, sharedProperties) {
         //  If there is no view, return to login page
-        if (view === undefined) {
+        if (view === undefined || !sharedProperties.getUser().isLoggedIn) {
             $state.go('welcome');
         }
 
@@ -28,9 +28,9 @@ angular.module('SimPlannerApp')
          *  Functions used by the view
          */
         $scope.findMatch = function (e, keyName) {
-            for (key in e) {
-                if (key === keyName) {
-                    return e[key];
+            for(var i = 0; i < e.length; i++){
+                if (e[i].param === keyName) {
+                    return e[i].value;
                 }
             }
         };
@@ -74,10 +74,29 @@ angular.module('SimPlannerApp')
                 });
             }
             
-            socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, function (response) {
+            socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, sharedProperties.getUser(), function (response) {
                 $scope.$apply(function () {
-                    $scope.items = response.data;
+                    $scope.items = sanitize(response.data[0]);
                 });
             });
+        };
+        
+        function sanitize(data){
+            var result = [];
+            
+            for(var i = 0; i < data.Data.length; i++){
+                var temp = [];
+                
+                for(var x = 0; x < data.Fields.length; x++){
+                    temp.push({
+                        param: data.Fields[x],
+                        value: data.Data[i][x]
+                    });
+                }
+                
+                result.push(temp);
+            }
+            
+            return result;
         };
     }]);

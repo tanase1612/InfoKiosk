@@ -56,7 +56,7 @@
                         <form class="form-inline" name="loginForm" ng-submit="signIn()" novalidate>
                           <div class="form-group">
                             <label class="sr-only" for="username">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Username" ng-model="login.name" required>
+                            <input type="text" class="form-control" id="username" placeholder="Username" ng-model="login.username" required>
                           </div>
                           <div class="form-group">
                             <label class="sr-only" for="password">Password</label>
@@ -68,7 +68,7 @@
                     
                     <div ng-show="user.isLoggedIn">
                         <span class="icon">
-                            <span class="hidden-xs">{{ user.name }}</span> <i class="glyphicon glyphicon-user"></i>
+                            <span class="hidden-xs">{{ user.username }}</span> <i class="glyphicon glyphicon-user"></i>
                         </span>
 
                         <ul>
