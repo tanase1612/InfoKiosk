@@ -6,12 +6,7 @@ angular.module('SimPlannerApp')
             .state('welcome', {
                 url: "/welcome",
                 templateUrl: urlBase + 'views/welcome.html',
-                controller: 'welcomeController',
-                resolve: {
-                    signOut: function(userService){
-                        return userService.signOut();
-                    }
-                }
+                controller: 'welcomeController'
             })
             .state('view', {
                 url: '/view/:view',
@@ -22,12 +17,8 @@ angular.module('SimPlannerApp')
                         return configService.getConfig()
                             .then(function(response){
                                 var config = response.data;
-
-                                console.log('config :', config);
-
                                 for (var i = 0; i < config.views.length; i++) {
                                     if (config.views[i].route === $stateParams.view) {
-                                        console.log('jackpot : ', config.views[i]);
                                         return config.views[i];
                                     }
                                 }
