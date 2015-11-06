@@ -23,8 +23,17 @@
         <!-- Load AngularJS Application -->
         <!-- Core -->
         <script src="scripts/core.js"></script>
+        <!-- Routes -->
+        <script src="scripts/route.js"></script>
+        <!-- Directives -->
+        <script src="scripts/directives/ngPrint.directive.js"></script>
+        <!-- Filters -->
+        <script src="scripts/filters/capitalize.filter.js"></script>
+        <script src="scripts/filters/datetime.filter.js"></script>
         <!-- Services -->
+        <script src="scripts/services/config.service.js"></script>
         <script src="scripts/services/socket.service.js"></script>
+        <script src="scripts/services/user.service.js"></script>
         <!-- Controllers -->
         <script src="scripts/controllers/nav.controller.js"></script>
         <script src="scripts/controllers/welcome.controller.js"></script>
@@ -46,23 +55,23 @@
 
                     <ul>
                         <li ng-repeat="view in nav">
-                            <a href="#/view/{{ view.route }}">{{ view.route | capitalize }}</a>
+                            <a href="#/view/{{ view.route }}">{{ view.route }}</a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="account">
                     <div ng-hide="user.isLoggedIn">
-                        <form class="form-inline" name="loginForm" ng-submit="signIn()" novalidate>
+                        <form class="form-inline" name="loginForm">
                           <div class="form-group">
                             <label class="sr-only" for="username">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Username" ng-model="login.username" required>
+                            <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username" required>
                           </div>
                           <div class="form-group">
                             <label class="sr-only" for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="login.password" required>
+                            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="user.password" required>
                           </div>
-                          <button type="submit" class="btn btn-default" ng-click="signIn(login)" ng-disabled="loginForm.$invalid">Sign in</button>
+                          <a class="btn btn-default" ng-click="signIn(user)" ng-disabled="loginForm.$invalid">Sign in</a>
                         </form>
                     </div>
                     

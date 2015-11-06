@@ -1,5 +1,5 @@
 angular.module('SimPlannerApp')
-    .factory('socketService', function (sharedProperties) {
+    .factory('socketService', function (configService) {
         var service = {};
     
         service.connect = function (call, verb, params, user, callback) {
@@ -16,8 +16,8 @@ angular.module('SimPlannerApp')
                         Parm: sckParams
                     }
                  },
-                 socket = new WebSocket(config.socketAddress);
-
+                 socket;
+            
             for (var i = 0; i < params.length; i++) {
                 sckParams.push(
                     sckParam(
@@ -28,22 +28,30 @@ angular.module('SimPlannerApp')
                 );
             }
             
-            socket.onopen = function(){
-                console.log('Socket is open');
-                socket.send(JSON.stringify(jsonObject));
-            };
+            configService.getConfig()
+                .then(function(response){
+                    socket = new WebSocket(response.data.socketAddress);
                 
-            socket.onmessage = function (response) {
-                console.log('\n' + new Date().toUTCString() + '\nServer responded');
-                console.log('connect data : ', response);
+                    socket.onopen = function(){
+                        console.log('Socket is open');
+                        socket.send(JSON.stringify(jsonObject));
+                    };
 
-                callback(JSON.parse(response.data));
-            };
+                    socket.onmessage = function (response) {
+                        console.log('\n' + new Date().toUTCString() + '\nServer responded');
+                        console.log('connect data : ', response);
 
-            socket.onclose = function () {
-                socket.close;
-                console.log("Socket is closed");
-            };
+                        callback(JSON.parse(response.data));
+                    };
+
+                    socket.onclose = function () {
+                        socket.close;
+                        console.log("Socket is closed");
+                    };
+                })
+                .catch(function(error){
+                    console.log('Error : ', error);
+                });
         };
 
         function guid() {

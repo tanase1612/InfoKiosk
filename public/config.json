@@ -1,0 +1,46 @@
+{
+    "socketAddress": "ws://localhost:8081/Common",
+    "IISProjectName": "simplanner",
+    "views": [
+        {
+            "route": "Arbejds Tider",
+            "viewFunctions": {
+                "print": true,
+                "datePicker": true
+            },
+            "storedProcedure": {
+                "get": {
+                    "name": "CALL",
+                    "verb": "rpAcListTime"
+                }
+            },
+            "values": [
+                {
+                    "shownName": "ID",
+                    "matchValue": "EVT.ID",
+                    "type": "id"
+                },
+                {
+                    "shownName": "Start",
+                    "matchValue": "EVT.T0",
+                    "type": "date"
+                },
+                {
+                    "shownName": "Slut",
+                    "matchValue": "EVT.T1",
+                    "type": "date"
+                },
+                {
+                    "shownName": "Tekst",
+                    "matchValue": "EVT.TEXT",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Ansvarlig",
+                    "matchValue": "EVT.RES",
+                    "type": "employee"
+                }
+            ]
+        }
+    ]
+}

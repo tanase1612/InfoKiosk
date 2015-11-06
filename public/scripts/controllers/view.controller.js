@@ -1,10 +1,12 @@
 angular.module('SimPlannerApp')
-    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'socketService', 'sharedProperties', function ($scope, $state, $interval, $window, view, socketService, sharedProperties) {
+    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'socketService', 'userService', function ($scope, $state, $interval, $window, view, socketService, userService) {
+        var user = userService.get();
+        
         //  If there is no view, return to login page
-        if (view === undefined || !sharedProperties.getUser().isLoggedIn) {
+        if (view === undefined) {
             $state.go('welcome');
         }
-
+        
         /*
          *  Sets the models to be used in the view
          */
@@ -74,7 +76,7 @@ angular.module('SimPlannerApp')
                 });
             }
             
-            socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, sharedProperties.getUser(), function (response) {
+            socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, user, function (response) {
                 $scope.$apply(function () {
                     $scope.items = sanitize(response.data[0]);
                 });

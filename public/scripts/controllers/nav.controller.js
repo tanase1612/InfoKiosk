@@ -1,24 +1,25 @@
 angular.module('SimPlannerApp')
-    .controller('navController', ['$scope', '$location', 'sharedProperties', 'socketService', function ($scope, $location, sharedProperties, socketService) {
-        $scope.nav = sharedProperties.getConfig().views;
-        $scope.user = sharedProperties.getUser();
-        $scope.login = {};
+    .controller('navController', ['$scope', '$location', '$state', 'configService', 'userService', function ($scope, $location, $state, configService,  userService) {
+        var config;
+        $scope.nav;
+        $scope.user = userService.get();
         
-        $scope.signIn = function(){
-            if($scope.loginForm.$valid){
-                socketService.connect('INIT', '', [], $scope.login, function(response){
-                    if(response.payload.success){
-                        $scope.user = $scope.login;
-                        $scope.user.isLoggedIn = true;
-                        $scope.user = sharedProperties.setUser($scope.user);
+        configService.getConfig()
+            .then(function(response){
+                config = response.data;
+                $scope.nav = config.views;
+            })
+            .catch(function(error){
+                console.log('Error : ', error);
+            });
 
-                        $scope.login = {};
-                        
-                        $location.path('view/' + sharedProperties.getConfig().views[0].route);
-                    } else {
-                        console.log('Error : Login failed');
-                    }
-                });
-            }
+        $scope.signIn = function () {
+            userService.signIn($scope.user, function(response){
+                if(response.isLoggedIn){
+                    $scope.user = response;
+                    
+                    $location.path('view/' + config.views[0].route);
+                }
+            });
         };
     }]);
