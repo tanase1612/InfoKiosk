@@ -1,6 +1,7 @@
 {
     "socketAddress": "ws://localhost:8081/Common",
     "IISProjectName": "simplanner",
+    "SessionTime": "10",
     "views": [
         {
             "route": "Produktionsordre",
