@@ -3,7 +3,7 @@
     "IISProjectName": "simplanner",
     "views": [
         {
-            "route": "Arbejds Tider",
+            "route": "Produktionsordre",
             "viewFunctions": {
                 "print": true,
                 "datePicker": true
@@ -11,34 +11,69 @@
             "storedProcedure": {
                 "get": {
                     "name": "CALL",
-                    "verb": "rpAcListTime"
+                    "verb": "rpPjQueryProd"
                 }
             },
             "values": [
                 {
-                    "shownName": "ID",
-                    "matchValue": "EVT.ID",
-                    "type": "id"
-                },
-                {
-                    "shownName": "Start",
-                    "matchValue": "EVT.T0",
+                    "shownName": "Startdato",
+                    "matchValue": "ACT.T0",
                     "type": "date"
                 },
                 {
-                    "shownName": "Slut",
-                    "matchValue": "EVT.T1",
+                    "shownName": "Slutdato",
+                    "matchValue": "ACT.T1",
                     "type": "date"
                 },
                 {
-                    "shownName": "Tekst",
-                    "matchValue": "EVT.TEXT",
+                    "shownName": "Sagsnr",
+                    "matchValue": "CUST.TAG",
                     "type": "text"
                 },
                 {
-                    "shownName": "Ansvarlig",
-                    "matchValue": "EVT.RES",
-                    "type": "employee"
+                    "shownName": "Ordrenr",
+                    "matchValue": "PROJ.TAG",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Ordretekst",
+                    "matchValue": "PROJ.TEXT",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Budgettimer",
+                    "matchValue": "ACT.DT.BDG",
+                    "type": "time"
+                },
+                {
+                    "shownName": "Plantimer",
+                    "matchValue": "ACT.DT",
+                    "type": "time"
+                },
+                {
+                    "shownName": "Realtimer",
+                    "matchValue": "ACT.CPL",
+                    "type": "time"
+                },
+                {
+                    "shownName": "Type",
+                    "matchValue": "ACT.TYP",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Opgavetekst",
+                    "matchValue": "ACT.TEXT",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Opgavenr",
+                    "matchValue": "ACT.TAG",
+                    "type": "text"
+                },
+                {
+                    "shownName": "Opgavestatus",
+                    "matchValue": "ACT.STATUS",
+                    "type": "text"
                 }
             ]
         }
