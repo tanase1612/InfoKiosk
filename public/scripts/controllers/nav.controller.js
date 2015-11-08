@@ -10,11 +10,16 @@ angular.module('SimPlannerApp')
         };
         $scope.$state = $state;
         $scope.$watch('$state.$current.locals.globals.view', function () {
-            if($location.path() === '/welcome'){
+            if ($location.path() === '/welcome') {
                 $scope.user = userService.signOut();
             }
         });
-
+        /*Defining time period per login session*/
+        $interval(function () {
+            $scope.user = userService.signOut();
+            $state.go('welcome');
+        }, 20000);
+        
         configService.getConfig()
             .then(function (response) {
                 config = response.data;
@@ -29,7 +34,9 @@ angular.module('SimPlannerApp')
                 if (response.isLoggedIn) {
                     $scope.user = response;
 
-                    $state.go('view', {view:config.views[0].route});
+                    $state.go('view', {
+                        view: config.views[0].route
+                    });
                 }
             });
         };
