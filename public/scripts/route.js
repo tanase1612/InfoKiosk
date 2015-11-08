@@ -21,6 +21,7 @@ angular.module('SimPlannerApp')
                                     if (config.views[i].route === $stateParams.view) {
                                         return config.views[i];
                                     }
+                                
                                 }
 
                                 return undefined;

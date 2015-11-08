@@ -9,6 +9,7 @@ angular.module('SimPlannerApp')
         //  If there is no view, return to login page
         if (view === undefined) {
             $state.go('welcome');
+            
         }
         
         /*
