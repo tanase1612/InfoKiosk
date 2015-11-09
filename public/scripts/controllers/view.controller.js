@@ -1,5 +1,5 @@
 angular.module('SimPlannerApp')
-    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'socketService', 'userService', function ($scope, $state, $interval, $window, view, socketService, userService) {
+    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'config', 'socketService', 'userService', function ($scope, $state, $interval, $window, view, config, socketService, userService) {
         var user = userService.get(),
             loop = {
                 ready: true,
@@ -24,6 +24,8 @@ angular.module('SimPlannerApp')
             secondDate: new Date(),
             minDate: new Date(),
         };
+        $scope.config = config;
+        $scope.loading = false;
         
         if(loop.ready){
             get();
@@ -46,15 +48,13 @@ angular.module('SimPlannerApp')
                 }
             }
         };
-
-        $scope.print = function () {
-            $window.print();
-        };
         
         $scope.fetch = function(){
             get();
         };
         
+        //  When one datepicker is visible we want to hide the other.
+        //  This is only relevant in small views.
         $scope.toggleDatepicker = function(value){
             if(value.toLowerCase() === 'first'){
                 $scope.datepickerFirst = !$scope.datepickerFirst;
@@ -69,6 +69,7 @@ angular.module('SimPlannerApp')
         /*
          *  Functions used by the controller
          */
+        //  Creates a call to the WebSocket Server in order to get some data.
         function get() {
             var datesBetween,
                 params = [],
@@ -78,6 +79,7 @@ angular.module('SimPlannerApp')
                 secondDate = addDays($scope.datePicker.firstDate, -1),
                 oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
             loop.ready = false;
+            $scope.items = [];
             
             if(view.viewFunctions.datePicker){
                 datesBetween = Math.round(Math.abs(($scope.datePicker.firstDate.getTime() - $scope.datePicker.secondDate.getTime())/(oneDay)));
@@ -93,13 +95,11 @@ angular.module('SimPlannerApp')
                     if(firstDate.getTime() > $scope.datePicker.secondDate.getTime()){
                         firstDate = $scope.datePicker.secondDate;
                     }
-                    console.log('firstDate : ', firstDate);
                     
                     secondDate = addDays(firstDate, increment);
                     if(secondDate.getTime() > $scope.datePicker.secondDate.getTime()){
                         secondDate = $scope.datePicker.secondDate;
                     }
-                    console.log('secondDate : ', secondDate);
                     
                     if(daysLeft > (increment-1)){
                         loop.iterations = loop.iterations + increment;
@@ -124,18 +124,25 @@ angular.module('SimPlannerApp')
                     });
                 }
                 
-                socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, user, function (response) {
-                    $scope.$apply(function () {
+                $scope.loading = true;
+                socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, user)
+                    .then(function(response){
                         var temp = sanitize(response.data[0]);
-                        
+
                         for(var i = 0; i < temp.length; i++){
                             $scope.items.push(temp[i]);
                         }
+                    })
+                    .catch(function(error){
+                        console.log('Error : ', error);
+                    })
+                    .finally(function(){
+                        $scope.loading = false;
                     });
-                });
             }
         };
         
+        //  Function used to sanitize the data, to provide us with the same data structure every time.
         function sanitize(data){
             var result = [];
             
@@ -156,7 +163,7 @@ angular.module('SimPlannerApp')
             return result;
         };
         
-        //function to add days to a given date. 
+        //  function to add days to a given date. 
         function addDays(startDate,numberOfDays){
             var result = new Date(
                 startDate.getFullYear(),
@@ -169,6 +176,7 @@ angular.module('SimPlannerApp')
             return result;
         };
         
+        //  Generates an unique id, to be added to the object in order for ng-repeat to seperate the different DOM elements.
         function generateId(separator) {
             var delim = separator || "-";
 

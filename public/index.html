@@ -29,7 +29,6 @@
         <script src="scripts/directives/ngPrint.directive.js"></script>
         <!-- Filters -->
         <script src="scripts/filters/capitalize.filter.js"></script>
-        <script src="scripts/filters/datetime.filter.js"></script>
         <!-- Services -->
         <script src="scripts/services/config.service.js"></script>
         <script src="scripts/services/socket.service.js"></script>
@@ -46,53 +45,10 @@
     </head>
 
     <body>
-        <nav ng-controller="navController">
-            <div class="wrapper">
-                <div class="menu" ng-show="user.isLoggedIn">
-                    <span class="icon">
-                        <i class="glyphicon glyphicon-menu-hamburger"></i> <span class="hidden-xs">Menu</span>
-                    </span>
-
-                    <ul>
-                        <li ng-repeat="view in nav">
-                            <a href="#/view/{{ view.route }}">{{ view.route }}</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="account">
-                    <div ng-hide="user.isLoggedIn">
-                        <form class="form-inline" name="loginForm">
-                          <div class="form-group">
-                            <label class="sr-only" for="username">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username" required>
-                          </div>
-                          <div class="form-group">
-                            <label class="sr-only" for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="user.password" required>
-                          </div>
-                          <a class="btn btn-default" ng-click="signIn(user)" ng-disabled="loginForm.$invalid">Sign in</a>
-                        </form>
-                    </div>
-                    
-                    <div ng-show="user.isLoggedIn">
-                        <span class="icon">
-                            <span class="hidden-xs">{{ user.username }}</span> <i class="glyphicon glyphicon-user"></i>
-                        </span>
-
-                        <ul>
-                            <li>
-                                <a href="#/welcome">Sign out</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <span class="clearfix"></span>
-        </nav>
+        <div ng-include="'views/partials/nav/nav.html'"></div>
         
-        <!-- This is where page content is inserted to -->
+        <!-- This is where page content is inserted to.
+             The html and controller for this the current view is imported by the route.js. -->
         <div class="wrapper">
             <div ui-view></div>
         </div>

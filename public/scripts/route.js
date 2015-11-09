@@ -30,6 +30,16 @@ angular.module('SimPlannerApp')
                                 console.log('Error : ', error);
                                 return undefined;
                             });
+                    },
+                    config: function (configService) {
+                        return configService.getConfig()
+                            .then(function(response){
+                                return response.data;
+                            })
+                            .catch(function(error){
+                                console.log('Error : ', error);
+                                return undefined;
+                            });
                     }
                 }
             })

@@ -1,8 +1,9 @@
 angular.module('SimPlannerApp')
-    .factory('socketService', function (configService) {
+    .factory('socketService', function (configService, $q, $timeout) {
         var service = {};
     
-        service.connect = function (call, verb, params, user, callback) {
+        //  Returns a promise
+        service.connect = function (call, verb, params, user) {
              var sckParams = [],
                  jsonObject = {
                     agmt: '00001',
@@ -16,7 +17,8 @@ angular.module('SimPlannerApp')
                         Parm: sckParams
                     }
                  },
-                 socket;
+                 socket,
+                 defer = $q.defer();
             
             for (var i = 0; i < params.length; i++) {
                 sckParams.push(
@@ -41,7 +43,7 @@ angular.module('SimPlannerApp')
                         console.log('\n' + new Date().toUTCString() + '\nServer responded');
                         console.log('connect data : ', response);
 
-                        callback(JSON.parse(response.data));
+                        defer.resolve(JSON.parse(response.data));
                     };
 
                     socket.onclose = function () {
@@ -50,8 +52,10 @@ angular.module('SimPlannerApp')
                     };
                 })
                 .catch(function(error){
-                    console.log('Error : ', error);
+                    defer.reject('Error : ', error);
                 });
+            
+            return defer.promise;
         };
 
         function guid() {

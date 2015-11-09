@@ -2,6 +2,17 @@
     "socketAddress": "ws://localhost:8081/Common",
     "IISProjectName": "simplanner",
     "SessionTime": 30,
+    
+    "dateFormat": "MMM dd yyyy",
+    "dateCSSclass": "",
+    
+    "timeFormat": "HH:mm",
+    "timeCSSclass": "",
+    
+    "dateTimeFormat": "yyyy MM dd HH:mm",
+    "dateTimeCSSclass": "",
+    
+    "textCSSclass": "",
     "views": [
         {
             "route": "Produktionsordre",

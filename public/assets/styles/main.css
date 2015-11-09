@@ -24,45 +24,31 @@ body{
 }
 
 .welcome{
-    text-align: center;
     margin-top: 100px;
+}
+
+.center{
+    text-align: center;
 }
 
 
 
 @media screen {
-
     #printSection {
-
         display: none;
-
     }
-
 }
-
 @media print {
-
     body * {
-
         visibility:hidden;
-
     }
-
     #printSection, #printSection * {
-
         visibility:visible;
-
     }
-
     #printSection {
-
         position:absolute;
-
         left:0;
-
         top:0;
-
     }
-
 }
 

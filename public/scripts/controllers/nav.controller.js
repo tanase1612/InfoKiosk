@@ -21,6 +21,7 @@ angular.module('SimPlannerApp')
                 config = response.data;
                 $scope.nav = config.views;
                 timeSpan = config.SessionTime;
+            
                 /*Defining time period per login session*/
                 $interval(function () {
                     $scope.user = userService.signOut();
