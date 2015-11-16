@@ -1,7 +1,15 @@
 {
     "socketAddress": "ws://localhost:8081/Common",
     "IISProjectName": "simplanner",
+    
+    "ApplicationName": "Produktion - Simplanner",
+    
     "SessionTime": 30,
+    "UseDefaultSignIn": true,
+    "DefaultSignIn": {
+        "Username": "SPLAN",
+        "Password": "pwd"
+    },
     
     "dateFormat": "MMM dd yyyy",
     "dateCSSclass": "",

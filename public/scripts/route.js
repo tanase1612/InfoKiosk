@@ -1,16 +1,14 @@
 angular.module('SimPlannerApp')
     .config(function ($stateProvider) {
-        var urlBase = '/simplanner/';
-
         $stateProvider
-            .state('welcome', {
-                url: "/welcome",
-                templateUrl: urlBase + 'views/welcome.html',
-                controller: 'welcomeController'
+            .state('signin', {
+                url: "/signin",
+                templateUrl: 'views/signin.html',
+                controller: 'signinController'
             })
             .state('view', {
                 url: '/view/:view',
-                templateUrl: urlBase + 'views/view.html',
+                templateUrl: 'views/view.html',
                 controller: 'viewController',
                 resolve: {
                     view: function ($stateParams, configService) {
@@ -45,7 +43,7 @@ angular.module('SimPlannerApp')
             })
             .state('404', {
                 url: '{path:.*}',
-                templateUrl: urlBase + '/views/404.html',
+                templateUrl: 'views/404.html',
                 controller: 'errorController'
             });
     });

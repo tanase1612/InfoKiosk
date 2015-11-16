@@ -2,7 +2,7 @@
  *  A service which provides function for the user
  */
 angular.module('SimPlannerApp')
-    .factory('userService', function ($localStorage, socketService) {
+    .factory('userService', function ($localStorage, $q, socketService) {
         var service = {};
 
         service.get = function () {
@@ -18,18 +18,26 @@ angular.module('SimPlannerApp')
             return $localStorage.user;
         };
 
-        service.signIn = function (user, callback) {
-            socketService.connect('INIT', '', [], user, function (response) {
-                if (response.payload.success) {
-                    user.isLoggedIn = true;
-                    $localStorage.user = user;
-                } else {
-                    console.log('Error : Login failed');
-                    reset();
-                }
+        service.signIn = function (user) {
+            var promise = $q.defer();
+            
+            socketService.connect('INIT', '', [], user)
+                .then(function(response){
+                    if (response.payload.success) {
+                        $localStorage.user = user;
+                        $localStorage.user.isLoggedIn = true;
+                    } else {
+                        console.log('Error : Login failed');
+                        reset();
+                    }
 
-                callback($localStorage.user);
-            });
+                    promise.resolve($localStorage.user);
+                })
+                .catch(function(error){
+                    promise.reject('Error : ', error);
+                });
+            
+            return promise.promise;
         };
 
         service.signOut = function(user){

@@ -1,11 +1,13 @@
-nav{
+/*nav{
     width: 100%;
     background-color: rgb(30,144,255);
     padding: 10px;
 }
 nav a,
-nav i{
-    color: #333;
+nav i,
+nav span{
+    color: white;
+    font-size: x-large;
 }
 nav ul{
     display: none;
@@ -44,7 +46,8 @@ nav ul{
 }
 
 .account{
-    float: right;
+    display: inline-block;
+    right: 0px;
 }
 .account:hover ul{
     display: block;
@@ -54,7 +57,49 @@ nav ul{
     padding: 5px;
 }
 
-.wrapper{
-    max-width: 80%;
-    margin: auto;
+*/
+
+nav{
+    width: 100%;
+    background-color: rgb(30,144,255);
+}
+nav a,
+nav i,
+nav span{
+    color: white;
+    font-size: x-large;
+}
+
+.title{
+    vertical-align: middle;
+}
+
+.title,
+.menu{
+    height: 100%;
+}
+.menu{
+    display: inline-block;
+    float: right;
+    padding: 5px 10px;
+}
+.menu:hover{
+    background-color: #8ec8ff;
+}
+.menu:hover ul{
+    display: block;
+}
+
+.menu ul{
+    display: none;
+    position: absolute;
+    background-color: #8ec8ff;
+    padding: 7px;
+    vertical-align: middle;
+    margin-left:-9px;
+}
+.menu li{
+    position: relative;
+    list-style: none;
+    white-space: nowrap;
 }

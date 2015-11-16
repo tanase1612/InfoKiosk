@@ -12,6 +12,9 @@
         
         <!-- Load Bootstrap CSS library -->
         <link type="text/css" href="lib/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Load Font Awesome -->
+        <link type="text/css" href="lib/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
 
         <!-- Load AngularJS modules -->
         <script src="lib/Angular-1.4.7/angular.min.js"></script>
@@ -35,7 +38,7 @@
         <script src="scripts/services/user.service.js"></script>
         <!-- Controllers -->
         <script src="scripts/controllers/nav.controller.js"></script>
-        <script src="scripts/controllers/welcome.controller.js"></script>
+        <script src="scripts/controllers/signin.controller.js"></script>
         <script src="scripts/controllers/view.controller.js"></script>
         <script src="scripts/controllers/error.controller.js"></script>
         
@@ -49,7 +52,7 @@
         
         <!-- This is where page content is inserted to.
              The html and controller for this the current view is imported by the route.js. -->
-        <div class="wrapper">
+        <div class="wrapper content-wrapper">
             <div ui-view></div>
         </div>
     </body>

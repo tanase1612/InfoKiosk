@@ -1,0 +1,29 @@
+.dial a,
+.signin input,
+.signin button{
+    padding: 20px;
+    margin: 1%;
+    width: 30%;
+    
+    display: inline-block;
+    border: 1px solid #333;
+    
+    font-size: large;
+    font-weight: 700;
+    color: rgb(30,144,255);
+    text-align: center;
+    text-decoration: none;
+}
+.dial a:hover,
+.signin button:hover{
+    text-decoration: none;
+    background: rgba(0,0,255,.1);
+}
+
+.signin button{
+    background-color: rgba(0,150,0,.3);
+    color:#333;
+}
+.signin input{
+    width: 62.5%;
+}

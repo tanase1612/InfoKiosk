@@ -5,9 +5,14 @@ body{
 
 .viewNavigation{
     display: inline-block;
-    float: right;
+    width: 100%;
+    margin-bottom: 20px;
 }
 .viewNavigation a {
+    float: right;
+}
+
+.datepicker{
     float: right;
 }
 
@@ -29,6 +34,16 @@ body{
 
 .center{
     text-align: center;
+    margin: auto;
+}
+
+.content-wrapper{
+    padding-top: 25px;
+}
+
+.wrapper{
+    max-width: 80%;
+    margin: auto;
 }
 
 

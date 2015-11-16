@@ -7,5 +7,6 @@
 var app = angular.module('SimPlannerApp', [
             'ui.router',
             'ui.bootstrap',
-            'ngStorage'
+            'ngStorage',
+            'ngAnimate'
           ]);

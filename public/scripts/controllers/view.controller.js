@@ -1,5 +1,5 @@
 angular.module('SimPlannerApp')
-    .controller('viewController', ['$scope', '$state', '$interval', '$window', 'view', 'config', 'socketService', 'userService', function ($scope, $state, $interval, $window, view, config, socketService, userService) {
+    .controller('viewController', ['$scope', '$state', 'view', 'config', 'socketService', 'userService', function ($scope, $state, view, config, socketService, userService) {
         var user = userService.get(),
             loop = {
                 ready: true,
@@ -8,7 +8,7 @@ angular.module('SimPlannerApp')
         
         //  If there is no view, return to login page
         if (view === undefined) {
-            $state.go('welcome');
+            $state.go('signin');
             
         }
         
@@ -30,13 +30,6 @@ angular.module('SimPlannerApp')
         if(loop.ready){
             get();
         }
-        
-        //  get new data every minute (60.000 milliseconds)
-        $interval(function () {
-            if(loop.ready){
-                get();
-            }
-        }, 60000);
 
         /*
          *  Functions used by the view

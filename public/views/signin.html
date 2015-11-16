@@ -1,0 +1,25 @@
+<link type="text/css" href="assets/styles/signin.css" rel="stylesheet">
+<div ng-include="'views/partials/pop/pop.html'"></div>
+
+<div class="signin">
+    <input type="text" placeholder="Indtast lønnummer" ng-model="account.login">
+    
+    <button ng-click="signin()">OK <i class="glyphicon glyphicon-ok"></i></button>
+</div>
+
+<div class="dial">
+    <a href ng-click="write(1)">1</a>
+    <a href ng-click="write(2)">2</a>
+    <a href ng-click="write(3)">3</a>
+    <a href ng-click="write(4)">4</a>
+    <a href ng-click="write(5)">5</a>
+    <a href ng-click="write(6)">6</a>
+    <a href ng-click="write(7)">7</a>
+    <a href ng-click="write(8)">8</a>
+    <a href ng-click="write(9)">9</a>
+    <a href ng-click="write('-')">-</a>
+    <a href ng-click="write(0)">0</a>
+    <a href ng-click="write('delete')"><i class="glyphicon glyphicon-arrow-left"></i> del</a>
+</div>
+
+<div ng-include="'views/partials/load/load.html'" ng-show="loading"></div>
