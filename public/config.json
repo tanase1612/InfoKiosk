@@ -11,6 +11,13 @@
         "Password": "pwd"
     },
     
+    "globalCalls": {
+        "signIn": {
+            "name": "CALL",
+            "verb": "PDLIMSTD.UserLogin"
+        }
+    },
+    
     "dateFormat": "MMM dd yyyy",
     "dateCSSclass": "",
     
@@ -21,79 +28,69 @@
     "dateTimeCSSclass": "",
     
     "textCSSclass": "",
+    
     "views": [
         {
-            "route": "Produktionsordre",
+            "route": "Indeværende uge",
+            "canBeSeenBy":[
+                "bruger"
+            ],
+            "showInMenu": true,
             "viewFunctions": {
-                "print": true,
-                "datePicker": true
+                "calculateSingleResult": {
+                    "shownName": "Saldo",
+                    "values": [
+                        "REG.DT2",
+                        "REG.DT3"
+                    ],
+                    "calculations": [
+                        "-"
+                    ]
+                }
             },
             "storedProcedure": {
                 "get": {
                     "name": "CALL",
-                    "verb": "rpPjQueryProd"
+                    "verb": "PDLIMSTD.ListTime"
                 }
             },
+            "tags": [
+                {
+                    "name": "typ1",
+                    "datatype": "s",
+                    "value": "TAG_ARBEJD"
+                },
+                {
+                    "name": "typ2",
+                    "datatype": "s",
+                    "value": "TAG_FLEX_PLUS"
+                }, 
+                {
+                    "name": "typ3",
+                    "datatype": "s",
+                    "value": "TAG_FLEX_MINUS"
+                },
+                {
+                    "name": "typ11",
+                    "datatype": "s",
+                    "value": "TAG_OVERTID_1"
+                }, 
+                {
+                    "name": "typ12",
+                    "datatype": "s",
+                    "value": "TAG_OVERTID_2"
+                }, 
+                {
+                    "name": "typ15",
+                    "datatype": "s",
+                    "value": "TAG_WORK"
+                }
+            ],
             "values": [
                 {
-                    "shownName": "Startdato",
-                    "matchValue": "ACT.T0",
+                    "shownName": "Dato",
+                    "matchValue": "REG.DATE",
                     "type": "date"
-                },
-                {
-                    "shownName": "Slutdato",
-                    "matchValue": "ACT.T1",
-                    "type": "date"
-                },
-                {
-                    "shownName": "Sagsnr",
-                    "matchValue": "CUST.TAG",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Ordrenr",
-                    "matchValue": "PROJ.TAG",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Ordretekst",
-                    "matchValue": "PROJ.TEXT",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Budgettimer",
-                    "matchValue": "ACT.DT.BDG",
-                    "type": "time"
-                },
-                {
-                    "shownName": "Plantimer",
-                    "matchValue": "ACT.DT",
-                    "type": "time"
-                },
-                {
-                    "shownName": "Realtimer",
-                    "matchValue": "ACT.CPL",
-                    "type": "time"
-                },
-                {
-                    "shownName": "Type",
-                    "matchValue": "ACT.TYP",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Opgavetekst",
-                    "matchValue": "ACT.TEXT",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Opgavenr",
-                    "matchValue": "ACT.TAG",
-                    "type": "text"
-                },
-                {
-                    "shownName": "Opgavestatus",
-                    "matchValue": "ACT.STATUS",
-                    "type": "text"
                 }
             ]
         }

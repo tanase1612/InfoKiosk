@@ -51,15 +51,13 @@ angular.module('SimPlannerApp')
                         if (response.isLoggedIn) {
                             $scope.account.login = '';
 
-                            $state.go('view', {
-                                view: config.views[0].route
-                            });
+                            $state.go('menu');
                         }
                         $scope.loading = false;
                     })
                     .catch(function(error){
-                        $scope.pop.showPop("Couldn't sign in due to system failures.");
-                        console.log('Error : ', error);
+                        $scope.pop.showPop(error);
+                        console.log(error);
                         $scope.loading = false;
                     });
             }

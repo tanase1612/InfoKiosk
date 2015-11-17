@@ -7,17 +7,13 @@ angular.module('SimPlannerApp')
             };
         
         //  If there is no view, return to login page
-        if (view === undefined) {
-            $state.go('signin');
-            
-        }
+        allowedAccess();
         
         /*
          *  Sets the models to be used in the view
          */
         $scope.values = view.values;
         $scope.title = view.route;
-        $scope.viewFunctions = view.viewFunctions;
         $scope.items = [];
         $scope.datePicker = {
             firstDate: new Date(),
@@ -26,10 +22,20 @@ angular.module('SimPlannerApp')
         };
         $scope.config = config;
         $scope.loading = false;
+        $scope.isVisible = {
+            update: false,
+            items: false,
+            print: false,
+            datePicker: false,
+            routes: false
+        };
+        $scope.routes = [];
         
         if(loop.ready){
             get();
         }
+        
+        setRoutes();
 
         /*
          *  Functions used by the view
@@ -62,98 +68,140 @@ angular.module('SimPlannerApp')
         /*
          *  Functions used by the controller
          */
-        //  Creates a call to the WebSocket Server in order to get some data.
-        function get() {
-            var datesBetween,
-                params = [],
-                increment = 11,
-                daysLeft,
-                firstDate = $scope.datePicker.firstDate,
-                secondDate = addDays($scope.datePicker.firstDate, -1),
-                oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-            loop.ready = false;
-            $scope.items = [];
+        function allowedAccess(){
+            var allowed = false;
             
-            if(view.viewFunctions.datePicker){
-                datesBetween = Math.round(Math.abs(($scope.datePicker.firstDate.getTime() - $scope.datePicker.secondDate.getTime())/(oneDay)));
+            if (view !== undefined && user !== undefined && user.isLoggedIn) {
+                for(var i = 0; i < view.canBeSeenBy.length; i++){
+                    if(view.canBeSeenBy[i] === user.userRole){
+                        allowed = true;
+                    }
+                }
             }
             
-            while(!loop.ready){
-                params = [];
-                
-                if(view.viewFunctions.datePicker){
-                    daysLeft = datesBetween - loop.iterations;
-                    
-                    firstDate = addDays(secondDate, 1);
-                    if(firstDate.getTime() > $scope.datePicker.secondDate.getTime()){
-                        firstDate = $scope.datePicker.secondDate;
-                    }
-                    
-                    secondDate = addDays(firstDate, increment);
-                    if(secondDate.getTime() > $scope.datePicker.secondDate.getTime()){
-                        secondDate = $scope.datePicker.secondDate;
-                    }
-                    
-                    if(daysLeft > (increment-1)){
-                        loop.iterations = loop.iterations + increment;
-                    } else {
-                        loop.iterations = loop.iterations + daysLeft;
-                    }
-                    
-                    if(daysLeft <= 0){
-                        loop.ready = true;
-                    }
-                    
-                    params.push({
-                        name: 't0',
-                        datatype: 'd',
-                        value: firstDate
-                    });
-
-                    params.push({
-                        name: 't1',
-                        datatype: 'd',
-                        value: secondDate
-                    });
-                }
-                
-                $scope.loading = true;
-                socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, user)
-                    .then(function(response){
-                        var temp = sanitize(response.data[0]);
-
-                        for(var i = 0; i < temp.length; i++){
-                            $scope.items.push(temp[i]);
-                        }
-                    })
-                    .catch(function(error){
-                        console.log('Error : ', error);
-                    })
-                    .finally(function(){
-                        $scope.loading = false;
-                    });
+            if(!allowed){
+                $state.go('signin');
             }
         };
         
-        //  Function used to sanitize the data, to provide us with the same data structure every time.
-        function sanitize(data){
-            var result = [];
+        function setRoutes(){
+            var views,
+                canBeSeenBy;
             
-            for(var i = 0; i < data.Data.length; i++){
-                var temp = [];
-                
-                for(var x = 0; x < data.Fields.length; x++){
-                    temp.push({
-                        _id: generateId(),
-                        param: data.Fields[x],
-                        value: data.Data[i][x]
-                    });
+            if(view.viewFunctions.showRoutes){
+                views = config.views;
+                for(var i = 0; i < views.length; i++){
+                    canBeSeenBy = views[i].canBeSeenBy
+                    
+                    if(canBeSeenBy !== undefined){
+                        for(var x = 0; x < canBeSeenBy.length; x++){
+                            if(canBeSeenBy[x] === user.userRole && views[i].showInMenu){
+                                $scope.routes.push(views[i]);
+                            }
+                        }
+                    }
                 }
-                
-                result.push(temp);
+            }
+        };
+        
+        function setVisible(){
+            if(view.storedProcedure){
+                $scope.isVisible.items = true;
+                $scope.isVisible.update = true;
             }
             
-            return result;
+            if(view.viewFunctions.print){
+                $scope.isVisible.print = true;
+            }
+            
+            if(view.viewFunctions.datePicker){
+                $scope.isVisible.datePicker = true;
+            }
+            
+            if(view.viewFunctions.showRoutes){
+                $scope.isVisible.routes = true;
+            }
+        };
+        
+        //  Creates a call to the WebSocket Server in order to get some data.
+        function get() {
+            if(view.storedProcedure){
+                var datesBetween,
+                    params = [],
+                    increment = 11,
+                    daysLeft,
+                    firstDate = $scope.datePicker.firstDate,
+                    secondDate = addDays($scope.datePicker.firstDate, -1),
+                    oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+                loop.ready = false;
+                $scope.items = [];
+
+                if(view.viewFunctions.datePicker){
+                    datesBetween = Math.round(Math.abs(($scope.datePicker.firstDate.getTime() - $scope.datePicker.secondDate.getTime())/(oneDay)));
+                }
+
+                while(!loop.ready){
+                    params = [];
+
+                    if(view.viewFunctions.datePicker){
+                        daysLeft = datesBetween - loop.iterations;
+
+                        firstDate = addDays(secondDate, 1);
+                        if(firstDate.getTime() > $scope.datePicker.secondDate.getTime()){
+                            firstDate = $scope.datePicker.secondDate;
+                        }
+
+                        secondDate = addDays(firstDate, increment);
+                        if(secondDate.getTime() > $scope.datePicker.secondDate.getTime()){
+                            secondDate = $scope.datePicker.secondDate;
+                        }
+
+                        if(daysLeft > (increment-1)){
+                            loop.iterations = loop.iterations + increment;
+                        } else {
+                            loop.iterations = loop.iterations + daysLeft;
+                        }
+
+                        if(daysLeft <= 0){
+                            loop.ready = true;
+                        }
+
+                        params.push({
+                            name: 't0',
+                            datatype: 'd',
+                            value: firstDate
+                        });
+
+                        params.push({
+                            name: 't1',
+                            datatype: 'd',
+                            value: secondDate
+                        });
+                    }
+
+                    if(view.tags){
+                        for(var i = 0; i < view.tags.length; i++){
+                            params.push({
+                                name: view.tags[i].name,
+                                datatype: view.tags[i].datatype,
+                                value: view.tags[i].value
+                            });
+                        }
+                    }
+
+                    $scope.loading = true;
+                    socketService.connect(view.storedProcedure.get.name, view.storedProcedure.get.verb, params, user)
+                        .then(function(response){
+                            $scope.items = response;
+                        })
+                        .catch(function(error){
+                            console.log('Error : ', error);
+                        })
+                        .finally(function(){
+                            $scope.loading = false;
+                        });
+                }
+            }
         };
         
         //  function to add days to a given date. 

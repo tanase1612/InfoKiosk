@@ -2,12 +2,14 @@
 
 <!-- This is the control panel in the top of the page. -->
 <div class="viewNavigation">
-    <a href ng-click="fetch()" class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i> Update</a>
-    
-    <div class="clearfix"></div>
+    <div class="update" ng-show="isVisible.update">
+        <a href ng-click="fetch()" class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i> Update</a>
+
+        <div class="clearfix"></div>
+    </div>
     
     <!-- Datepicker -->
-    <div class="datepicker" ng-show="viewFunctions.datePicker">
+    <div class="datepicker" ng-show="isVisible.datePicker">
         <div class="datepicker-container">
             <span class="hidden-xs">Start date</span>
             
@@ -65,7 +67,7 @@
 <div class="viewNavigation">
     <!-- Print -->
     <a href class="btn btn-default" 
-       ng-show="viewFunctions.print" 
+       ng-show="isVisible.print" 
        ng-print 
        print-element-id="printSection">
         <i class="glyphicon glyphicon-print"></i> Print
@@ -78,49 +80,51 @@
      This is a template, which allows us to use the code multiple times, this is ideal since we are using the same structure for both the
      browser view aswell as the printed view. --> 
 <script type="text/ng-template" id="content.html">
-    <p class="alert alert-info" ng-show="items.length === 0">
-        There was no data.
-    </p>
-    
-    <table class="table table-striped table-hover" ng-hide="items.length === 0">
-        <thead>
-            <tr>
-                <td ng-repeat="value in values">
-                    <h3>
-                        {{ value.shownName }}
-                    </h3>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- For each object in $scope.items -->
-            <tr ng-repeat="item in items">
-                <!-- For each object in $scope.values. 
-                     Values are values specified in config.json, which tells us what data to show in the view. -->
-                <td ng-repeat="value in values track by $index">
-                    <!-- If the type of value is 'date', show this -->
-                    <span ng-if="value.type.toLowerCase() === 'date'" ng-class="config.dateCSSclass">
-                        {{ findMatch(item, value.matchValue) | date:config.dateFormat }}
-                    </span>
-                    
-                    <!-- If the type of value is 'time', show this -->
-                    <span ng-if="value.type.toLowerCase() === 'time'" ng-class="config.timeCSSclass">
-                        {{ findMatch(item, value.matchValue) | date:config.timeFormat }}
-                    </span>
-                    
-                    <!-- If the type of value is 'datetime', show this -->
-                    <span ng-if="value.type.toLowerCase() === 'datetime'" ng-class="config.dateTimeCSSclass">
-                        {{ findMatch(item, value.matchValue) | date:config.dateTimeFormat }}
-                    </span>
-                    
-                    <!-- If the type of value is 'text', show this -->
-                    <span ng-if="value.type.toLowerCase() === 'text'" ng-class="config.textCSSclass">
-                        {{ findMatch(item, value.matchValue) }}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div ng-include="'views/partials/load/load.html'" ng-show="loading"></div>
+    <div ng-show="isVisible.items">
+        <p class="alert alert-info" ng-show="items.length === 0">
+            There was no data.
+        </p>
+
+        <table class="table table-striped table-hover" ng-hide="items.length === 0">
+            <thead>
+                <tr>
+                    <td ng-repeat="value in values">
+                        <h3>
+                            {{ value.shownName }}
+                        </h3>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- For each object in $scope.items -->
+                <tr ng-repeat="item in items">
+                    <!-- For each object in $scope.values. 
+                         Values are values specified in config.json, which tells us what data to show in the view. -->
+                    <td ng-repeat="value in values track by $index">
+                        <!-- If the type of value is 'date', show this -->
+                        <span ng-if="value.type.toLowerCase() === 'date'" ng-class="config.dateCSSclass">
+                            {{ findMatch(item, value.matchValue) | date:config.dateFormat }}
+                        </span>
+
+                        <!-- If the type of value is 'time', show this -->
+                        <span ng-if="value.type.toLowerCase() === 'time'" ng-class="config.timeCSSclass">
+                            {{ findMatch(item, value.matchValue) | date:config.timeFormat }}
+                        </span>
+
+                        <!-- If the type of value is 'datetime', show this -->
+                        <span ng-if="value.type.toLowerCase() === 'datetime'" ng-class="config.dateTimeCSSclass">
+                            {{ findMatch(item, value.matchValue) | date:config.dateTimeFormat }}
+                        </span>
+
+                        <!-- If the type of value is 'text', show this -->
+                        <span ng-if="value.type.toLowerCase() === 'text'" ng-class="config.textCSSclass">
+                            {{ findMatch(item, value.matchValue) }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div ng-include="'views/partials/load/load.html'" ng-show="loading"></div>
+    </div>
 </script>

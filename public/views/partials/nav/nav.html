@@ -1,3 +1,5 @@
+<link type="text/css" href="assets/styles/nav.css" rel="stylesheet">
+
 <nav ng-controller="navController">
     <div class="wrapper">
         <span class="title">
@@ -10,7 +12,8 @@
             </span>
 
             <ul>
-                <li ng-repeat="view in config.views">
+                <li ng-repeat="view in config.views" 
+                    ng-if="view.showInMenu">
                     <a href="#/view/{{ view.route }}">{{ view.route }}</a>
                 </li>
             </ul>

@@ -6,6 +6,23 @@ angular.module('SimPlannerApp')
                 templateUrl: 'views/signin.html',
                 controller: 'signinController'
             })
+            .state('menu', {
+                url: "/menu",
+                templateUrl: 'views/menu.html',
+                controller: 'menuController',
+                resolve: {
+                    config: function (configService) {
+                        return configService.getConfig()
+                            .then(function(response){
+                                return response.data;
+                            })
+                            .catch(function(error){
+                                console.log('Error : ', error);
+                                return undefined;
+                            });
+                    }
+                }
+            })
             .state('view', {
                 url: '/view/:view',
                 templateUrl: 'views/view.html',

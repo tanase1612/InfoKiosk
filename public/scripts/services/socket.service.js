@@ -1,15 +1,13 @@
 angular.module('SimPlannerApp')
     .factory('socketService', function (configService, $q) {
         var service = {};
-    
+
         //  Returns a promise
         service.connect = function (call, verb, params, user) {
-             var sckParams = [],
-                 jsonObject = {
+            var sckParams = [],
+                jsonObject = {
                     agmt: '00001',
                     usr: null,
-                    pwd: null,
-                    login: null,
                     request: call,
                     respond: guid(),
                     invoke: null,
@@ -17,63 +15,61 @@ angular.module('SimPlannerApp')
                         Verb: verb,
                         Parm: sckParams
                     }
-                 },
-                 socket,
-                 result = $q.defer(),
-                 config;
-            
+                },
+                socket,
+                result = $q.defer(),
+                config;
+
             configService.getConfig()
                 .then(function (response) {
                     config = response.data;
-                
-                    if(config.UseDefaultSignIn){
-                        jsonObject.login = user.login;
-                        jsonObject.usr = config.DefaultSignIn.Username;
-                        jsonObject.pwd = config.DefaultSignIn.Password;
-                    } else {
-                        jsonObject.usr = user.username;
-                        jsonObject.pwd = user.password;
-                    }
+
+                    params.push({
+                        name: 'login',
+                        datatype: 's',
+                        value: config.UseDefaultSignIn === true ? user.login : ''
+                    });
+                    params.push({
+                        name: 'pwd',
+                        datatype: 's',
+                        value: config.UseDefaultSignIn === true ? config.DefaultSignIn.Password : user.password
+                    });
+
+                    jsonObject.usr = config.UseDefaultSignIn === true ? config.DefaultSignIn.Username : user.username;
 
                     for (var i = 0; i < params.length; i++) {
                         sckParams.push(
                             sckParam(
-                                params[i].name, 
-                                params[i].datatype, 
+                                params[i].name,
+                                params[i].datatype,
                                 params[i].value
                             )
                         );
                     }
 
-                    configService.getConfig()
-                        .then(function(response){
-                            socket = new WebSocket(response.data.socketAddress);
+                    socket = new WebSocket(config.socketAddress);
 
-                            socket.onopen = function(){
-                                console.log('Socket is open');
-                                socket.send(JSON.stringify(jsonObject));
-                            };
+                    socket.onopen = function () {
+                        console.log('Socket is open');
+                        socket.send(JSON.stringify(jsonObject));
+                    };
 
-                            socket.onmessage = function (response) {
-                                console.log('\n' + new Date().toUTCString() + '\nServer responded');
-                                console.log('connect data : ', response);
+                    socket.onmessage = function (response) {
+                        console.log('\n' + new Date().toUTCString() + '\nServer responded');
+                        console.log('connect data : ', response);
 
-                                result.resolve(JSON.parse(response.data));
-                            };
+                        result.resolve(sanitize(JSON.parse(response.data).data[0]));
+                    };
 
-                            socket.onclose = function () {
-                                socket.close;
-                                console.log("Socket is closed");
-                            };
-                        })
-                        .catch(function(error){
-                            result.reject('Error : ', error);
-                        });
+                    socket.onclose = function () {
+                        socket.close;
+                        console.log("Socket is closed");
+                    };
                 })
                 .catch(function (error) {
-                    result.reject('Error : ', error);
+                    result.reject(error);
                 });
-            
+
             return result.promise;
         };
 
@@ -96,13 +92,56 @@ angular.module('SimPlannerApp')
                 Datatype: datatype.toUpperCase(),
                 Value: value
             };
-            
-            if(result.Datatype === 'D'){
+
+            if (result.Datatype === 'D') {
                 result.Value = '' + value.getFullYear() + '-' + ("0" + (value.getMonth() + 1)).slice(-2) + '-' + ("0" + value.getDate()).slice(-2);
+            }
+
+            return result;
+        };
+
+        function sanitize(data) {
+            var result = [],
+                iterations = data.Data.length === 0 ? 1 : data.Data.length;
+
+            for (var i = 0; i < iterations; i++) {
+                var item = new Object;
+
+                for (var x = 0; x < data.Fields.length; x++) {
+                    var field = data.Fields[x].toLowerCase(),
+                        row = data.Data[i],
+                        variableName;
+
+                    variableName = camelcase(field);
+
+                    var a = variableName;
+                    item[a] = row === undefined ? undefined : row[x];
+                }
+
+                result.push(item);
             }
             
             return result;
         };
+
+        function camelcase(text) {
+            var result = '',
+                nextToUpper = false,
+                char;
+
+            for (var i = 0; i < text.length; i++) {
+                char = text.charAt(i);
+
+                if (char === '.') {
+                    nextToUpper = true;
+                } else {
+                    result += nextToUpper ? char.toUpperCase() : char.toLowerCase();
+                    nextToUpper = false;
+                }
+            }
+
+            return result;
+        }
 
         return service;
     });
