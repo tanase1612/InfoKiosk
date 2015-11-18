@@ -1,5 +1,7 @@
 angular.module('SimPlannerApp')
-    .config(function ($stateProvider) {
+    .config(function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.when('/','/signin');
+    
         $stateProvider
             .state('signin', {
                 url: "/signin",
@@ -38,7 +40,7 @@ angular.module('SimPlannerApp')
                                     }
                                 
                                 }
-
+                            
                                 return undefined;
                             })
                             .catch(function(error){

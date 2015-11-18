@@ -36,18 +36,21 @@ angular.module('SimPlannerApp')
                                 if (!response.error) {
                                     var user = response[0];
                                     
-                                    user.userRole = 'bruger';
-                                    
-                                    if(user.userRole === undefined){
-                                        promise.reject("Error : Username doesn't exist.");
+                                    if(user.userRole === undefined || user.userRole === null){
+                                        if(user.userText !== undefined && user.userText !== null){
+                                            promise.reject("Error : User profile doesn't have sufficient setup.");
+                                        } else {
+                                            promise.reject("Error : Username doesn't exist.");
+                                        }
                                     } else {
                                         user.isLoggedIn = true;
+                                        user.login = user.userText;
                                         
                                         $localStorage.user = user;
                                     }
                                     
                                 } else {
-                                    promise.reject('Error : Login failed');
+                                    promise.reject('Error : Login failed.');
                                     reset();
                                 }
                                 promise.resolve($localStorage.user);

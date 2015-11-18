@@ -1,5 +1,9 @@
 <link type="text/css" href="assets/styles/menu.css" rel="stylesheet">
 
 <div class="row menu-view">
-    <a href ng-click="reroute(route)" ng-repeat="route in routes">{{ route.route }}</a>
+    <a href 
+       ng-repeat="view in routes"
+       ng-click="reroute(view, true)" >
+        {{ view.route }}
+    </a>
 </div>

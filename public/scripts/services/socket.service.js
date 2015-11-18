@@ -1,9 +1,9 @@
 angular.module('SimPlannerApp')
-    .factory('socketService', function (configService, $q) {
+    .factory('socketService', function ($q, configService, sharedService) {
         var service = {};
 
         //  Returns a promise
-        service.connect = function (call, verb, params, user) {
+        service.connect = function (call, verb, params, user, view) {
             var sckParams = [],
                 jsonObject = {
                     agmt: '00001',
@@ -24,17 +24,6 @@ angular.module('SimPlannerApp')
                 .then(function (response) {
                     config = response.data;
 
-                    params.push({
-                        name: 'login',
-                        datatype: 's',
-                        value: config.UseDefaultSignIn === true ? user.login : ''
-                    });
-                    params.push({
-                        name: 'pwd',
-                        datatype: 's',
-                        value: config.UseDefaultSignIn === true ? config.DefaultSignIn.Password : user.password
-                    });
-
                     jsonObject.usr = config.UseDefaultSignIn === true ? config.DefaultSignIn.Username : user.username;
 
                     for (var i = 0; i < params.length; i++) {
@@ -46,7 +35,68 @@ angular.module('SimPlannerApp')
                             )
                         );
                     }
+                
+                    if(view){
+                        if (view.storedProcedure.get.tags) {
+                            var tags = view.storedProcedure.get.tags;
 
+                            for (var i = 0; i < tags.length; i++) {
+                                sckParams.push(
+                                    sckParam(
+                                        tags[i].name,
+                                        tags[i].datatype,
+                                        tags[i].value
+                                    )
+                                );
+                            }
+                        }
+                        
+                        if(view.storedProcedure.get.parameters.qryusr){
+                            sckParams.push(
+                                sckParam(
+                                    'qryusr',
+                                    's',
+                                    user.login
+                                )
+                            );
+                        }
+                        
+                        if(view.storedProcedure.get.parameters.login){
+                            sckParams.push(
+                                sckParam(
+                                    'login',
+                                    's',
+                                    user.login
+                                )
+                            );
+                        }
+                        
+                        if(view.storedProcedure.get.parameters.pwd){
+                            sckParams.push(
+                                sckParam(
+                                    'pwd',
+                                    's',
+                                    config.UseDefaultSignIn === true ? user.login : user.password
+                                )
+                            );
+                        }
+                    } else {
+                        sckParams.push(
+                            sckParam(
+                                'login',
+                                's',
+                                user.login
+                            )
+                        );
+                        sckParams.push(
+                            sckParam(
+                                'pwd',
+                                's',
+                                config.UseDefaultSignIn === true ? user.login : user.password
+                            )
+                        );
+                    }
+                
                     socket = new WebSocket(config.socketAddress);
 
                     socket.onopen = function () {
@@ -112,7 +162,7 @@ angular.module('SimPlannerApp')
                         row = data.Data[i],
                         variableName;
 
-                    variableName = camelcase(field);
+                    variableName = sharedService.camelcase(field);
 
                     var a = variableName;
                     item[a] = row === undefined ? undefined : row[x];
@@ -123,25 +173,6 @@ angular.module('SimPlannerApp')
             
             return result;
         };
-
-        function camelcase(text) {
-            var result = '',
-                nextToUpper = false,
-                char;
-
-            for (var i = 0; i < text.length; i++) {
-                char = text.charAt(i);
-
-                if (char === '.') {
-                    nextToUpper = true;
-                } else {
-                    result += nextToUpper ? char.toUpperCase() : char.toLowerCase();
-                    nextToUpper = false;
-                }
-            }
-
-            return result;
-        }
 
         return service;
     });

@@ -1,5 +1,5 @@
 angular.module('SimPlannerApp')
-    .controller('navController', ['$scope', '$location', '$state', '$interval', 'configService', 'userService', function ($scope, $location, $state, $interval, configService, userService) {
+    .controller('navController', ['$scope', '$location', '$state', '$interval', '$rootScope', 'configService', 'userService', 'sharedService', function ($scope, $location, $state, $interval, $rootScope, configService, userService, sharedService) {
         var timeSpan;
         $scope.user = userService.get();
         $scope.config;
@@ -10,12 +10,9 @@ angular.module('SimPlannerApp')
         }, 1000);
 
         //  Update when the view changes.
-        $scope.reload = function () {
-            $state.reload();
-        };
-        $scope.$state = $state;
-        $scope.$watch('$state.$current.locals.globals.view', function () {
+        $rootScope.$on('$locationChangeStart', function () {
             $scope.user = userService.get();
+            
             if ($location.path() === '/signin') {
                 $scope.user = userService.signOut();
             }
@@ -29,4 +26,8 @@ angular.module('SimPlannerApp')
             .catch(function (error) {
                 console.log('Error : ', error);
             });
+        
+        $scope.reroute = function(object, isView){
+            sharedService.reroute(object, isView);
+        };
     }]);

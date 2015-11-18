@@ -124,6 +124,18 @@
                 </tr>
             </tbody>
         </table>
+        
+        <table>
+            <tbody>
+                <tr>
+                    <td ng-repeat="item in calculations">
+                        <span>
+                            {{ item.name }} {{ item.value }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <div ng-include="'views/partials/load/load.html'" ng-show="loading"></div>
     </div>

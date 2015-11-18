@@ -6,32 +6,31 @@
             <i class="fa fa-cogs"></i> {{ config.ApplicationName }} {{ clock | date:config.timeFormat }}
         </span>
 
-        <div class="menu" ng-show="user.isLoggedIn">
-            <span class="icon">
-                <i class="glyphicon glyphicon-menu-hamburger"></i> <span class="hidden-xs">Menu</span>
-            </span>
+        <span ng-show="user.isLoggedIn">
+            <div class="menu">
+                <span class="icon">
+                    <a href ng-click="reroute('menu', false)"><i class="glyphicon glyphicon-menu-hamburger"></i> <span class="hidden-xs">Menu</span></a>
+                </span>
 
-            <ul>
-                <li ng-repeat="view in config.views" 
-                    ng-if="view.showInMenu">
-                    <a href="#/view/{{ view.route }}">{{ view.route }}</a>
-                </li>
-            </ul>
-        </div>
+                <ul>
+                    <li ng-repeat="view in config.views" ng-if="view.showInMenu">
+                        <a href ng-click="reroute(view, true)">{{ view.route }}</a>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="menu">
-            <div ng-show="user.isLoggedIn">
+            <div class="menu">
                 <span class="icon">
                     <span class="hidden-xs">{{ user.username }}</span> <i class="glyphicon glyphicon-user"></i>
                 </span>
 
                 <ul>
                     <li>
-                        <a href="#/signin">Sign out</a>
+                        <a href ng-click="reroute('signin', false)">Sign out</a>
                     </li>
                 </ul>
             </div>
-        </div>
+        </span>
 
         <span class="clearfix"></span>
     </div>

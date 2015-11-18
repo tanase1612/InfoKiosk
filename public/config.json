@@ -7,8 +7,7 @@
     "SessionTime": 30,
     "UseDefaultSignIn": true,
     "DefaultSignIn": {
-        "Username": "SPLAN",
-        "Password": "pwd"
+        "Username": "SPLAN"
     },
     
     "globalCalls": {
@@ -17,6 +16,21 @@
             "verb": "PDLIMSTD.UserLogin"
         }
     },
+    
+    "roles": [
+        {
+            "name": "admin",
+            "rank": 1
+        },
+        {
+            "name": "manager",
+            "rank": 2
+        },
+        {
+            "name": "bruger",
+            "rank": 3
+        }
+    ],
     
     "dateFormat": "MMM dd yyyy",
     "dateCSSclass": "",
@@ -32,65 +46,97 @@
     "views": [
         {
             "route": "Indeværende uge",
+            "routeParameters": {
+                "currentWeek": true
+            },
             "canBeSeenBy":[
-                "bruger"
+                3
             ],
             "showInMenu": true,
             "viewFunctions": {
-                "calculateSingleResult": {
-                    "shownName": "Saldo",
-                    "values": [
-                        "REG.DT2",
-                        "REG.DT3"
-                    ],
-                    "calculations": [
-                        "-"
-                    ]
-                }
+                "calculate": [
+                    {
+                        "shownName": "Saldo",
+                        "calculation": "[REG.DT2]-[REG.DT3]"
+                    }
+                ]
             },
             "storedProcedure": {
                 "get": {
                     "name": "CALL",
-                    "verb": "PDLIMSTD.ListTime"
+                    "verb": "PDLIMSTD.ListTime",
+                    "parameters": {
+                        "qryusr":true
+                    },
+                    "tags": [
+                        {
+                            "name": "typ1",
+                            "datatype": "s",
+                            "value": "TAG_ARBEJD"
+                        },
+                        {
+                            "name": "typ2",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_PLUS"
+                        }, 
+                        {
+                            "name": "typ3",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_MINUS"
+                        },
+                        {
+                            "name": "typ11",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_1"
+                        }, 
+                        {
+                            "name": "typ12",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_2"
+                        }, 
+                        {
+                            "name": "typ15",
+                            "datatype": "s",
+                            "value": "TAG_WORK"
+                        }
+                    ]
                 }
             },
-            "tags": [
-                {
-                    "name": "typ1",
-                    "datatype": "s",
-                    "value": "TAG_ARBEJD"
-                },
-                {
-                    "name": "typ2",
-                    "datatype": "s",
-                    "value": "TAG_FLEX_PLUS"
-                }, 
-                {
-                    "name": "typ3",
-                    "datatype": "s",
-                    "value": "TAG_FLEX_MINUS"
-                },
-                {
-                    "name": "typ11",
-                    "datatype": "s",
-                    "value": "TAG_OVERTID_1"
-                }, 
-                {
-                    "name": "typ12",
-                    "datatype": "s",
-                    "value": "TAG_OVERTID_2"
-                }, 
-                {
-                    "name": "typ15",
-                    "datatype": "s",
-                    "value": "TAG_WORK"
-                }
-            ],
             "values": [
                 {
                     "shownName": "Dato",
                     "matchValue": "REG.DATE",
                     "type": "date"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT1",
+                    "type": "text"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT2",
+                    "type": "text"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT3",
+                    "type": "text"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT11",
+                    "type": "text"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT12",
+                    "type": "text"
+                },
+                {
+                    "shownName": "",
+                    "matchValue": "REG.DT15",
+                    "type": "text"
                 }
             ]
         }
