@@ -4,7 +4,7 @@
     
     "ApplicationName": "Produktion - Simplanner",
     
-    "SessionTime": 30,
+    "SessionTime": 2,
     "UseDefaultSignIn": true,
     "DefaultSignIn": {
         "Username": "SPLAN"

@@ -4,15 +4,15 @@ angular.module('SimPlannerApp')
         $scope.user = userService.get();
         $scope.config;
         $scope.clock = new Date();
-        
-        $interval(function(){
+
+        $interval(function () {
             $scope.clock = new Date();
         }, 1000);
 
         //  Update when the view changes.
         $rootScope.$on('$locationChangeStart', function () {
             $scope.user = userService.get();
-            
+
             if ($location.path() === '/signin') {
                 $scope.user = userService.signOut();
             }
@@ -22,12 +22,23 @@ angular.module('SimPlannerApp')
             .then(function (response) {
                 $scope.config = response.data;
                 timeSpan = $scope.config.SessionTime;
+
+
+                $interval(function () {
+                    var path = $location.path();
+                    if (path.substring(0, 5) === '/view') {
+                        console.log('first atempt');
+                        $scope.user = userService.signOut();
+                        sharedService.reroute('signin', false);
+                    }
+                }, 60000 * timeSpan);
+
             })
             .catch(function (error) {
                 console.log('Error : ', error);
             });
-        
-        $scope.reroute = function(object, isView){
+
+        $scope.reroute = function (object, isView) {
             sharedService.reroute(object, isView);
         };
     }]);
