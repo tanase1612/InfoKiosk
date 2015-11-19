@@ -1,5 +1,5 @@
 angular.module('SimPlannerApp')
-    .controller('navController', ['$scope', '$location', '$state', '$interval', '$rootScope', 'configService', 'userService', 'sharedService', function ($scope, $location, $state, $interval, $rootScope, configService, userService, sharedService) {
+    .controller('navController', ['$scope', '$location', '$interval', '$rootScope', 'configService', 'userService', 'sharedService', function ($scope, $location, $interval, $rootScope, configService, userService, sharedService) {
         var timeSpan;
         $scope.user = userService.get();
         $scope.config;

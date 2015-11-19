@@ -4,7 +4,7 @@
     
     "ApplicationName": "Produktion - Simplanner",
     
-    "SessionTime": 2,
+    "SessionTime": 30,
     "UseDefaultSignIn": true,
     "DefaultSignIn": {
         "Username": "SPLAN"
@@ -47,7 +47,7 @@
         {
             "route": "Indeværende uge",
             "routeParameters": {
-                "currentWeek": true
+                "date": true
             },
             "canBeSeenBy":[
                 3
@@ -59,7 +59,8 @@
                         "shownName": "Saldo",
                         "calculation": "[REG.DT2]-[REG.DT3]"
                     }
-                ]
+                ],
+                "pickWeek": true
             },
             "storedProcedure": {
                 "get": {
@@ -109,17 +110,17 @@
                     "type": "date"
                 },
                 {
-                    "shownName": "",
+                    "shownName": "Arbejde",
                     "matchValue": "REG.DT1",
                     "type": "text"
                 },
                 {
-                    "shownName": "",
+                    "shownName": "+ Flex",
                     "matchValue": "REG.DT2",
                     "type": "text"
                 },
                 {
-                    "shownName": "",
+                    "shownName": "- Flex",
                     "matchValue": "REG.DT3",
                     "type": "text"
                 },

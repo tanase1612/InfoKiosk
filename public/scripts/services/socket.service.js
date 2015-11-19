@@ -101,6 +101,7 @@ angular.module('SimPlannerApp')
 
                     socket.onopen = function () {
                         console.log('Socket is open');
+                        //console.log('Sending : ', jsonObject);
                         socket.send(JSON.stringify(jsonObject));
                     };
 
