@@ -13,7 +13,7 @@
                 </span>
 
                 <ul>
-                    <li ng-repeat="view in config.views" ng-if="view.showInMenu">
+                    <li ng-repeat="view in routes" ng-if="view.showInMenu">
                         <a href ng-click="reroute(view, true)">{{ view.route }}</a>
                     </li>
                 </ul>

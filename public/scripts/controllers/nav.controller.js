@@ -4,6 +4,7 @@ angular.module('SimPlannerApp')
         $scope.user = userService.get();
         $scope.config;
         $scope.clock = new Date();
+        $scope.routes = [];
 
         $interval(function () {
             $scope.clock = new Date();
@@ -21,18 +22,16 @@ angular.module('SimPlannerApp')
         configService.getConfig()
             .then(function (response) {
                 $scope.config = response.data;
+                $scope.routes = sharedService.setMenuRoutes($scope.config.views, $scope.user);
                 timeSpan = $scope.config.SessionTime;
-
 
                 $interval(function () {
                     var path = $location.path();
                     if (path.substring(0, 5) === '/view') {
-                        console.log('first atempt');
                         $scope.user = userService.signOut();
                         sharedService.reroute('signin', false);
                     }
                 }, 60000 * timeSpan);
-
             })
             .catch(function (error) {
                 console.log('Error : ', error);

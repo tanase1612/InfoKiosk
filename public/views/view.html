@@ -1,68 +1,88 @@
+<div ng-include="'views/partials/pop/pop.html'"></div>
+
 <h1>{{ title }}</h1>
 
 <!-- This is the control panel in the top of the page. -->
 <div class="viewNavigation">
-    <!-- Update -->
-    <div class="update" ng-show="isVisible.update">
-        <a href ng-click="fetch()" class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i> Update</a>
+    <table>
+        <tr>
+            <td>
+                <div class="row">
+                    <!-- Pick week -->
+                    <div class="pick-week" ng-show="isVisible.pickWeek">
+                        <a ng-click="changeWeek(true)" class="glyphicon glyphicon-menu-left"></a>
+                        <span>Week: {{ pickWeek }}</span>
+                        <a ng-click="changeWeek(false)" class="glyphicon glyphicon-menu-right"></a>
+                    </div>
+                </div>
+                
+                <!-- Dropdowns -->
+                <div ng-show="isVisible.dropdown" class="row dropdown-container">
+                    <div ng-repeat="d in dropdown.selects track by $index" ng-include="'dropdown.html'"></div>
+                    <div class="clearfix"></div>
+                </div>
+            </td>
+            <td>
+                <div class="row">
+                    <!-- Update -->
+                    <div class="update" ng-show="isVisible.update">
+                        <a href ng-click="fetch()" class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i> Update</a>
 
-        <div class="clearfix"></div>
-    </div>
-    
-    <!-- Pick week -->
-    <div class="pick-week" ng-show="isVisible.pickWeek">
-        <a ng-click="changeWeek(true)" class="glyphicon glyphicon-menu-left"></a>
-        <span>Week: {{ pickWeek }}</span>
-        <a ng-click="changeWeek(false)" class="glyphicon glyphicon-menu-right"></a>
-    </div>
-    
-    
-    
-    <!-- Datepicker -->
-    <div class="datepicker" ng-show="isVisible.datePicker">
-        <div class="datepicker-container">
-            <span class="hidden-xs">Start date</span>
-            
-            <a href class="visible-xs-block btn btn-default" 
-               ng-click="toggleDatepicker('first')">
-                Start date <i class="glyphicon" 
-                              ng-class="datepickerFirst === true 
-                                        ? 'glyphicon-eye-close' 
-                                        : 'glyphicon-eye-open'"></i>
-            </a>
-            
-            <uib-datepicker class="datepicker-firstdate" 
-                            ng-model="datePicker.firstDate" 
-                            show-weeks="true" 
-                            ng-click="datePicker.secondDate < datePicker.firstDate 
-                                      ? datePicker.secondDate = datePicker.firstDate 
-                                      : datePicker.secondDate = datePicker.secondDate"
-                            ng-class="datepickerFirst === true 
-                                      ? 'visible-xs-block' 
-                                      : 'hidden-xs'"></uib-datepicker>
-        </div>
-        
-        <div class="datepicker-container">
-            <span class="hidden-xs">End date</span>
-            
-            <a href class="visible-xs-block btn btn-default" 
-               ng-click="toggleDatepicker('second')">
-                End date <i class="glyphicon" 
-                            ng-class="datepickerSecond === true 
-                                      ? 'glyphicon-eye-close' 
-                                      : 'glyphicon-eye-open'"></i>
-            </a>
-            
-            <uib-datepicker class="datepicker-seconddate" 
-                            ng-model="datePicker.secondDate" 
-                            min-date="datePicker.firstDate" 
-                            show-weeks="true" 
-                            class="well well-sm"
-                            ng-class="datepickerSecond === true 
-                                      ? 'visible-xs-block' 
-                                      : 'hidden-xs'"></uib-datepicker>
-        </div>
-    </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                
+                <!-- Datepicker -->
+                <div class="datepicker" ng-show="isVisible.datePicker">
+                    <div class="datepicker-container">
+                        <span class="hidden-xs">Start date</span>
+
+                        <a href 
+                           class="visible-xs-block btn btn-default" 
+                           ng-click="toggleDatepicker('first')">
+                            Start date <i class="glyphicon" 
+                                          ng-class="datepickerFirst === true 
+                                                    ? 'glyphicon-eye-close' 
+                                                    : 'glyphicon-eye-open'"></i>
+                        </a>
+
+                        <uib-datepicker class="datepicker-firstdate" 
+                                        ng-model="datePicker.firstDate" 
+                                        show-weeks="true" 
+                                        ng-click="datePicker.secondDate < datePicker.firstDate 
+                                                  ? datePicker.secondDate = datePicker.firstDate 
+                                                  : datePicker.secondDate = datePicker.secondDate"
+                                        ng-class="datepickerFirst === true 
+                                                  ? 'visible-xs-block' 
+                                                  : 'hidden-xs'"></uib-datepicker>
+                    </div>
+
+                    <div class="datepicker-container">
+                        <span class="hidden-xs">End date</span>
+
+                        <a href 
+                           class="visible-xs-block btn btn-default" 
+                           ng-click="toggleDatepicker('second')">
+                            End date <i class="glyphicon" 
+                                        ng-class="datepickerSecond === true 
+                                                  ? 'glyphicon-eye-close' 
+                                                  : 'glyphicon-eye-open'"></i>
+                        </a>
+
+                        <uib-datepicker class="datepicker-seconddate" 
+                                        ng-model="datePicker.secondDate" 
+                                        min-date="datePicker.firstDate"
+                                        max-date="datePicker.maxDate"
+                                        show-weeks="true" 
+                                        class="well well-sm"
+                                        ng-class="datepickerSecond === true 
+                                                  ? 'visible-xs-block' 
+                                                  : 'hidden-xs'"></uib-datepicker>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
     
     <div class="clearfix"></div>
 </div>
@@ -112,43 +132,39 @@
                         <!-- For each object in $scope.values. 
                              Values are values specified in config.json, which tells us what data to show in the view. -->
                         <td ng-repeat="value in values track by $index">
-                            <!-- If the type of value is 'date', show this -->
-                            <span ng-if="value.type.toLowerCase() === 'date'" ng-class="config.dateCSSclass">
-                                {{ findMatch(item, value.matchValue) | date:config.dateFormat }}
-                            </span>
-
-                            <!-- If the type of value is 'time', show this -->
-                            <span ng-if="value.type.toLowerCase() === 'time'" ng-class="config.timeCSSclass">
-                                {{ findMatch(item, value.matchValue) | date:config.timeFormat }}
-                            </span>
-
-                            <!-- If the type of value is 'datetime', show this -->
-                            <span ng-if="value.type.toLowerCase() === 'datetime'" ng-class="config.dateTimeCSSclass">
-                                {{ findMatch(item, value.matchValue) | date:config.dateTimeFormat }}
-                            </span>
-
-                            <!-- If the type of value is 'text', show this -->
-                            <span ng-if="value.type.toLowerCase() === 'text'" ng-class="config.textCSSclass">
-                                {{ findMatch(item, value.matchValue) }}
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table class="table table-hover">
-                <tbody>
-                    <tr>
-                        <td ng-repeat="item in calculations" class="info">
                             <span>
-                                <strong>{{ item.name }}: {{ item.value }}</strong>
+                                {{ findMatch(item, value.matchValue) | simplanner: value.type : value.format }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-show="isVisible.summarize" class="info">
+                        <td ng-repeat="value in summarize track by $index">
+                            <span class="{{ value.cssClass }}">
+                                {{ value.value | simplanner: value.type : value.format }}
                             </span>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            
+            <span ng-repeat="item in calculations">
+                <strong>{{ item.name }}: {{ item.value | simplanner: 'digits' : 2 }}</strong>
+            </span>
         </div>
 
         <div ng-include="'views/partials/load/load.html'" ng-show="loading"></div>
+    </div>
+</script>
+
+<!-- This is the template for dropdowns in our view. --> 
+<script type="text/ng-template" id="dropdown.html">
+    <div>
+        <span>{{ d.name }}{{ d.index }}</span>
+        <select class="form-control" 
+                ng-options="item as item.name for item in d.items"
+                ng-change="dropdownSelected(dropdown.models[d.index].item, d.index)" 
+                ng-model="dropdown.models[d.index].item"
+                ng-init="dropdown.models[d.index].item = d.items[0]">
+        </select>
     </div>
 </script>

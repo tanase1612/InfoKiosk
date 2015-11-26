@@ -32,17 +32,6 @@
         }
     ],
     
-    "dateFormat": "MMM dd yyyy",
-    "dateCSSclass": "",
-    
-    "timeFormat": "HH:mm",
-    "timeCSSclass": "",
-    
-    "dateTimeFormat": "yyyy MM dd HH:mm",
-    "dateTimeCSSclass": "",
-    
-    "textCSSclass": "",
-    
     "views": [
         {
             "route": "Indeværende uge",
@@ -60,14 +49,16 @@
                         "calculation": "[REG.DT2]-[REG.DT3]"
                     }
                 ],
-                "pickWeek": true
+                "pickWeek": true,
+                "summarize": true
             },
             "storedProcedure": {
                 "get": {
                     "name": "CALL",
                     "verb": "PDLIMSTD.ListTime",
                     "parameters": {
-                        "qryusr":true
+                        "qryusr":true,
+                        "dt": 1
                     },
                     "tags": [
                         {
@@ -107,37 +98,232 @@
                 {
                     "shownName": "Dato",
                     "matchValue": "REG.DATE",
-                    "type": "date"
+                    "type": "weekday",
+                    "format": "da-DK"
                 },
                 {
                     "shownName": "Arbejde",
                     "matchValue": "REG.DT1",
-                    "type": "text"
+                    "type": "digits",
+                    "format": 2
                 },
                 {
-                    "shownName": "+ Flex",
+                    "shownName": "+Flex",
                     "matchValue": "REG.DT2",
-                    "type": "text"
+                    "type": "digits",
+                    "format": 2
                 },
                 {
-                    "shownName": "- Flex",
+                    "shownName": "-Flex",
                     "matchValue": "REG.DT3",
-                    "type": "text"
+                    "type": "digits",
+                    "format": 2
                 },
                 {
-                    "shownName": "",
-                    "matchValue": "REG.DT11",
-                    "type": "text"
+                    "shownName": "Pause",
+                    "matchValue": "REG.DT2",
+                    "type": "digits",
+                    "format": 2
+                }
+            ]
+        },
+        {
+            "route": "Periode",
+            "canBeSeenBy":[
+                3
+            ],
+            "showInMenu": true,
+            "viewFunctions": {
+                "datePicker": {
+                    "pickWeeks": true,
+                    "maxDate": "today",
+                    "selectionSpan": "week"
+                },
+                "summarize": true
+            },
+            "storedProcedure": {
+                "get": {
+                    "name": "CALL",
+                    "verb": "PDLIMSTD.ListTime",
+                    "parameters": {
+                        "qryusr":true,
+                        "dt": 7
+                    },
+                    "tags": [
+                        {
+                            "name": "typ1",
+                            "datatype": "s",
+                            "value": "TAG_ARBEJD"
+                        },
+                        {
+                            "name": "typ2",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_PLUS"
+                        }, 
+                        {
+                            "name": "typ3",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_MINUS"
+                        },
+                        {
+                            "name": "typ11",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_1"
+                        }, 
+                        {
+                            "name": "typ12",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_2"
+                        }, 
+                        {
+                            "name": "typ15",
+                            "datatype": "s",
+                            "value": "TAG_WORK"
+                        }
+                    ]
+                }
+            },
+            "values": [
+                {
+                    "shownName": "Uge",
+                    "matchValue": "REG.DATE",
+                    "type": "weekNr"
                 },
                 {
-                    "shownName": "",
-                    "matchValue": "REG.DT12",
-                    "type": "text"
+                    "shownName": "Arbejde",
+                    "matchValue": "REG.DT1",
+                    "type": "digits",
+                    "format": 1
                 },
                 {
-                    "shownName": "",
-                    "matchValue": "REG.DT15",
-                    "type": "text"
+                    "shownName": "+Flex",
+                    "matchValue": "REG.DT2",
+                    "type": "digits",
+                    "format": 1
+                },
+                {
+                    "shownName": "-Flex",
+                    "matchValue": "REG.DT3",
+                    "type": "digits",
+                    "format": 1
+                },
+                {
+                    "shownName": "Pause",
+                    "matchValue": "REG.DT2",
+                    "type": "digits",
+                    "format": 1
+                }
+            ]
+        },
+        {
+            "route": "Medarbejder Periode",
+            "canBeSeenBy":[
+                2
+            ],
+            "showInMenu": true,
+            "viewFunctions": {
+                "dropdown": {
+                    "name": "Afdeling",
+                    "populate": {
+                        "name": "CALL",
+                        "verb": "PDLIMSTD.ListGroup",
+                        "itemFieldName": "GRP.TEXT"
+                    },
+                    "slave": {
+                        "name": "Medarbejder",
+                        "populate": {
+                            "name": "CALL",
+                            "verb": "PDLIMSTD.ListResource",
+                            "itemFieldName": "RES.TAG",
+                            "params": [
+                                {
+                                    "name": "grp",
+                                    "datatype": "s",
+                                    "value": "GRP.ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "datePicker": {
+                    "pickWeeks": true,
+                    "maxDate": "today",
+                    "selectionSpan": "week"
+                },
+                "summarize": true
+            },
+            "storedProcedure": {
+                "get": {
+                    "name": "CALL",
+                    "verb": "PDLIMSTD.ListTime",
+                    "parameters": {
+                        "qryusr":true,
+                        "dt": 1
+                    },
+                    "tags": [
+                        {
+                            "name": "typ1",
+                            "datatype": "s",
+                            "value": "TAG_ARBEJD"
+                        },
+                        {
+                            "name": "typ2",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_PLUS"
+                        }, 
+                        {
+                            "name": "typ3",
+                            "datatype": "s",
+                            "value": "TAG_FLEX_MINUS"
+                        },
+                        {
+                            "name": "typ11",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_1"
+                        }, 
+                        {
+                            "name": "typ12",
+                            "datatype": "s",
+                            "value": "TAG_OVERTID_2"
+                        }, 
+                        {
+                            "name": "typ15",
+                            "datatype": "s",
+                            "value": "TAG_WORK"
+                        }
+                    ]
+                }
+            },
+            "values": [
+                {
+                    "shownName": "Dato",
+                    "matchValue": "REG.DATE",
+                    "type": "date",
+                    "format": "yyyy/MM/dd"
+                },
+                {
+                    "shownName": "Arbejde",
+                    "matchValue": "REG.DT1",
+                    "type": "digits",
+                    "format": 1
+                },
+                {
+                    "shownName": "+Flex",
+                    "matchValue": "REG.DT2",
+                    "type": "digits",
+                    "format": 1
+                },
+                {
+                    "shownName": "-Flex",
+                    "matchValue": "REG.DT3",
+                    "type": "digits",
+                    "format": 1
+                },
+                {
+                    "shownName": "Pause",
+                    "matchValue": "REG.DT2",
+                    "type": "digits",
+                    "format": 1
                 }
             ]
         }

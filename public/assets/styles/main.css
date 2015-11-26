@@ -11,6 +11,9 @@ body{
 .viewNavigation a {
     float: right;
 }
+.viewNavigation table{
+    width: 100%;
+}
 
 .datepicker{
     float: right;
